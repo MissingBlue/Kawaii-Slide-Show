@@ -1,0 +1,123 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+:root {
+	
+	--a-duration: 5s;
+	
+	--image-seq-scale: 1;
+	
+	--app-text-color: rgba(255,255,255,1);
+	
+	--app-text-font-style: normal;
+	--app-text-font-variant: normal;
+	--app-text-font-weight: normal;
+	--app-text-line-height: 1;
+	--app-text-font-size: 16px;
+	--app-text-font-family: sans-serif;
+	--app-text-font:	var(--app-text-font-style)
+								var(--app-text-font-variant)
+								var(--app-text-font-weight)
+								var(--app-text-font-size)/var(--app-text-line-height)
+								var(--app-text-font-family);
+	
+	--app-anime-default-behavior: var(--a-duration) linear 0s 1 normal forwards running;
+	
+	color: var(--app-text-color);
+	font: var(--app-text-font);
+	
+}
+:root, body {
+	
+	height: 100%;
+	
+}
+body {
+	
+	--tile-color-0: rgb(120,120,120);
+	--tile-color-1: rgb(160,160,160);
+	
+	
+	box-sizing: border-box;
+	overflow: hidden;
+	padding: 2rem;
+	
+}
+#app {
+	
+	align-items: flex-end;
+	display: flex;
+	height: 100%;
+	justify-content: flex-end;
+	
+}
+#frame {
+	
+	--last-h: calc(var(--last-height) * (var(--image-seq-target-raw-rect-height-0) / var(--last-raw-height)) * var(--last-correction));
+	--last-w: calc(var(--last-width) * (var(--image-seq-target-raw-rect-height-0) / var(--last-raw-height)) * var(--last-correction));
+	--h: calc(var(--height) * (var(--image-seq-target-raw-rect-height-0) / var(--raw-height)) * var(--correction));
+	--w: calc(var(--width) * (var(--image-seq-target-raw-rect-height-0) / var(--raw-height)) * var(--correction));
+	
+	--border-color: rgba(216,216,216,1);
+	
+	border-radius: 2rem;
+	box-shadow: 0 0 0rem 1px rgba(216,216,216,1), 0 0 0rem 2px rgba(80,80,80,1), 0 0 2rem .2rem var(--border-color);
+	background: var(--bgi) right bottom/contain no-repeat;
+		height: var(--h);
+		width: var(--w);
+	display: block;
+	position: relative;
+	
+}
+.initialized #frame {
+	animation: transition var(--a-duration) ease-out 0s infinite normal forwards running;
+}
+#screen {
+	
+}
+@keyframes transition {
+	0% {
+		height: var(--last-h);
+		width: var(--last-w);
+	}
+	4% {
+		height: var(--h);
+		width: var(--w);
+	}
+	100% {
+		height: var(--h);
+		width: var(--w);
+	}
+}
+@keyframes interval { from {} to {} }
+
+#text {
+	align-items: flex-end;
+	bottom: 0;
+	display: flex;
+	font: normal normal 1000 3rem/1 "Arial", "メイリオ", sans-serif;
+	height: 100%;
+	letter-spacing: -1px;
+	flex-direction: column;
+	justify-content: flex-end;
+	padding: .5rem;
+	position: absolute;
+	right: 0;
+	text-shadow: 0 0 2rem rgba(0,0,0,1), 0 2px 0 rgba(0,0,0,1);
+	white-space: nowrap;
+}
+#text[data-text-a]::before {
+	
+	content: attr(data-text-a);
+	margin-bottom: 1rem;
+	z-index: 2;
+	
+}
+#text[data-text-b]::after {
+	
+	content: attr(data-text-b);
+	font-size: 2rem;
+	z-index: 1;
+	
+}
