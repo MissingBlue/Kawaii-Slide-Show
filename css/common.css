@@ -1,0 +1,51 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+:root {
+	
+	--a-duration: 5s;
+	
+	--image-seq-scale: 1;
+	
+	--app-text-color: rgba(255,255,255,1);
+	
+	--app-text-font-style: normal;
+	--app-text-font-variant: normal;
+	--app-text-font-weight: normal;
+	--app-text-line-height: 1;
+	--app-text-font-size: 16px;
+	--app-text-font-family: sans-serif;
+	--app-text-font:	var(--app-text-font-style)
+								var(--app-text-font-variant)
+								var(--app-text-font-weight)
+								var(--app-text-font-size)/var(--app-text-line-height)
+								var(--app-text-font-family);
+	
+	--app-anime-default-behavior: var(--a-duration) linear 0s 1 normal forwards running;
+	
+	--bg-transparent-tile-color-0: rgb(120,120,120);
+	--bg-transparent-tile-color-1: rgb(160,160,160);
+	--bg-transparent: conic-gradient(var(--bg-transparent-tile-color-0) 0.25turn, var(--bg-transparent-tile-color-1) 0.25turn 0.5turn, var(--bg-transparent-tile-color-0) 0.5turn 0.75turn, var(--bg-transparent-tile-color-1) 0.75turn) top left / 80px 80px repeat;
+	
+	color: var(--app-text-color);
+	font: var(--app-text-font);
+	
+}
+:root, body {
+	
+	height: 100%;
+	
+}
+body {
+	
+	background-color: transparent;
+	box-sizing: border-box;
+	padding: 1rem;
+	
+}
+body.dev {
+	
+	--body-bg-transparent: var(--bg-transparent);
+	
+}
