@@ -11,15 +11,15 @@ body {
 	padding: 2rem;
 	
 }
-body.f1, .f1 #app { align-items: flex-end; justify-content: flex-start; }
-body.f2, .f2 #app { align-items: flex-end; justify-content: center; }
-body.f3, .f3 #app { align-items: flex-end; justify-content: flex-end; }
-body.f4, .f4 #app { align-items: center; justify-content: flex-start; }
-body.f5, .f5 #app { align-items: center; justify-content: center; }
-body.f6, .f6 #app { align-items: center; justify-content: flex-end; }
-body.f7, .f7 #app { align-items: flex-start; justify-content: flex-start; }
-body.f8, .f8 #app { align-items: flex-start; justify-content: center; }
-body.f9, .f9 #app { align-items: flex-start; justify-content: flex-end; }
+body.f1, .f1 #app { --bg-pos: left bottom; align-items: flex-end; justify-content: flex-start; }
+body.f2, .f2 #app { --bg-pos: center bottom; align-items: flex-end; justify-content: center; }
+body.f3, .f3 #app { --bg-pos: right bottom; align-items: flex-end; justify-content: flex-end; }
+body.f4, .f4 #app { --bg-pos: left center; align-items: center; justify-content: flex-start; }
+body.f5, .f5 #app { --bg-pos: center center; align-items: center; justify-content: center; }
+body.f6, .f6 #app { --bg-pos: right center; align-items: center; justify-content: flex-end; }
+body.f7, .f7 #app { --bg-pos: left top; align-items: flex-start; justify-content: flex-start; }
+body.f8, .f8 #app { --bg-pos: center top; align-items: flex-start; justify-content: center; }
+body.f9, .f9 #app { --bg-pos: right top; align-items: flex-start; justify-content: flex-end; }
 
 #app {
 	
@@ -37,16 +37,30 @@ body.f9, .f9 #app { align-items: flex-start; justify-content: flex-end; }
 	
 	--border-color: rgba(216,216,216,1);
 	
+	background: none,
+					var(--bgi) var(--bg-pos)/contain no-repeat;
 	border-radius: 2rem;
 	box-shadow: 0 0 0rem 1px rgba(216,216,216,1), 0 0 0rem 2px rgba(80,80,80,1), 0 0 2rem .2rem var(--border-color);
-	background: var(--bgi) right bottom/contain no-repeat;
 	display: block;
 	height: var(--h);
 	width: var(--w);
 	
+	animation: 
+	
 }
 .initialized #frame {
-	animation: transition var(--a-duration) ease-out 0s infinite normal forwards running;
+	
+	--bgi-reflect-color-0: transparent;
+	--bgi-reflect: linear-gradient(175deg, var(--bgi-reflect-color-0) 20%, rgba(255,255,255,calc(3/4)) 22.5%, rgba(255,255,255,0) 75%, var(--bgi-reflect-color-0));
+	--bgi-reflect-height: 400;
+	--bgi-reflect-size: 100% calc(var(--bgi-reflect-height) * 1%);
+	--bgi-reflect-pos-y: calc(-100 / (var(--bgi-reflect-height) - 100) * 100%);
+	--bgi-reflect-pos-0: 0% var(--bgi-reflect-pos-y);
+	--bgi-reflect-pos-1: 0% calc(var(--bgi-reflect-pos-y) * -1 + 100%);
+	
+	animation:	transition var(--a-duration) ease-out 0s infinite normal forwards running,
+					frame-bg var(--a-duration) ease-in 0s infinite normal forwards running;
+	
 }
 #screen {
 	
@@ -65,7 +79,19 @@ body.f9, .f9 #app { align-items: flex-start; justify-content: flex-end; }
 		width: var(--w);
 	}
 }
-@keyframes interval { from {} to {} }
+@keyframes frame-bg {
+	0% { background: none, var(--bgi) var(--bg-pos)/contain no-repeat; }
+	0.1% {
+		background: var(--bgi-reflect) var(--bgi-reflect-pos-0)/var(--bgi-reflect-size) no-repeat,
+						var(--bgi) var(--bg-pos)/contain no-repeat;
+	}
+	20% {
+		background: var(--bgi-reflect) var(--bgi-reflect-pos-1)/var(--bgi-reflect-size) no-repeat,
+						var(--bgi) var(--bg-pos)/contain no-repeat;
+	}
+	20.1% { background: none, var(--bgi) var(--bg-pos)/contain no-repeat; }
+	100% { background: none, var(--bgi) var(--bg-pos)/contain no-repeat; }
+}
 
 #text {
 	align-items: flex-end;

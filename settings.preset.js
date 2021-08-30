@@ -9,6 +9,19 @@ transition_dur: 0.04,
 // 例えば dur が 5 の場合、この値を 0.04 にすると 5 * 0.04 = 0.2 になるので、トランジションは 0.2 秒間で行われることになる。
 // この値を 1 にすると、ファイルの表示の開始から終了までの全時間を通じてトランジションが行われ、0 にするとトランジションがまったく行われない。
 
+transition_reflection_delay: 0,
+// トランジション時の反射光演出の開始時間。
+// 画像表示中に反射光を発生させるタイミングを、表示時間全体を 0 から 1 として、その範囲の小数値で指定する。
+// 例えば dur: 5, transition_reflection_delay: 0.25 であれば、 5 ＊ 0.25 で、表示切替後 1.25 秒後に反射光が発生する。
+// 1 を指定すると、反射光演出がオフになる。
+transition_reflection: 0,
+// トランジション発生時の反射光演出の効果時間。
+// transition_reflection_delay 同様 0 から 1 の範囲の小数値で指定するが、
+// その範囲は dur - (dur * transition_reflection_delay) になる。
+// dur: 5, transition_reflection_delay: 0.25, transition_reflection: 0.4 であれば、
+// 5 - (5 * 0.25) * 0.4 で、1.5 秒間、反射光が生じることになる。
+// 0 を指定した場合、反射光演出はオフになる。 
+
 app_width: '100%',
 app_height: '50%',
 // 画像フレームの幅(app_width)と、高さ(app_height)。

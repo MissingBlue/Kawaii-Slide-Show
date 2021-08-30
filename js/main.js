@@ -60,7 +60,9 @@ boot = cfg => {
 init = cfg => {
 	
 	const	dur = parseInt(cfg.dur),
-			tdur = parseFloat(cfg.transition_dur),
+			tdur = range(parseFloat(cfg.transition_dur), 0,1),
+			trdelay = range(parseFloat(cfg.transition_reflection_delay), 0,1),
+			trdur = range(parseFloat(cfg.transition_reflection), 0,1),
 			pos = parseInt(cfg.position),
 			files = cfg.files,
 			filesLength = files.length,
@@ -76,6 +78,8 @@ init = cfg => {
 			screenNode = document.getElementById('screen'),
 			
 			iteratedAnimation = event => {
+					
+					if (event.animationName !== 'transition') return;
 					
 					const	elapse = event.elapsedTime,
 							index = (elapse - totalDur * (elapse / totalDur | 0)) / totalDur * filesLength | 0,
@@ -119,27 +123,20 @@ init = cfg => {
 	
 	document.documentElement.style.setProperty('--a-duration', `${Number.isNaN(dur) ? 5 : dur}s`),
 	
-	i = -1;
-	while (document.styleSheets[++i]) {
-		i0 = -1;
-		while (document.styleSheets[i].cssRules[++i0]) {
-			if (
-				!(document.styleSheets[i].cssRules[i0] instanceof CSSKeyframesRule) ||
-				document.styleSheets[i].cssRules[i0].name !== 'transition'
-			) continue;
-			document.styleSheets[i].cssRules[i0].cssRules[1].keyText =
-				`${Math.max(0, Math.min((isNaN(tdur) ? 0.04 : tdur) * 100, 100))}%`;
-			break;
-		}
-		if (document.styleSheets[i].cssRules[i0]) break;
-	}
-	
 	body.classList.add(`f${isNaN(pos) ? 3 : Math.min(Math.max(pos, 0), 9)}`),
 	
 	is.ifor = 'app',
 	is.setAttribute('cvar', cfg.cssvar),
 	
 	is.addEventListener('updated-all', event => (
+			
+			setKeyframeText('transition', v => `${(isNaN(v) ? 0.04 : v) * 100}%`, { i: 1, v: tdur }),
+			setKeyframeText(
+					'frame-bg',
+					(v,i, kfs) => `${v === undefined ? parseFloat(kfs[--i].keyText) + 0.1 : isNaN(v) ? 0.0 : v}%`,
+					{ i: 1, v: 100 * trdelay }, { i: 2, v: 100 * (1 - trdelay) * trdur + (100 * trdelay) }, { i: 3 }
+				),
+			
 			frameNode.addEventListener('animationstart', iteratedAnimation, eventOnce),
 			frameNode.addEventListener('animationiteration', iteratedAnimation),
 			body.classList.add('initialized')
@@ -159,6 +156,49 @@ xError = error => (console.error(error), alert(error)),
 eventOnce = { once: true },
 
 setCSSV = (element, name, value) => element.style.setProperty(`--${name}`, value),
-getCSSV = (element, name) => element.style.getPropertyValue(`--${name}`);
+getCSSV = (element, name) => element.style.getPropertyValue(`--${name}`),
+range = (v,min,max) => Math.min(Math.max(v, min), max),
+
+setKeyframeText = (name, calc, ...keys) => {
+	
+	let i,i0,i1,i2,i3,css,rule,rule0,rule1,kf;
+	
+	i = -1, css = document.styleSheets;
+	while (css[++i]) {
+		
+		i0 = -1;
+		while (rule = css[i].rules[++i0]) {
+			i1 = -1;
+			while (rule0 = rule.styleSheet.cssRules[++i1]) {
+				
+				if (!(rule0 instanceof CSSKeyframesRule) || rule0.name !== name) continue;
+				
+				i2 = -1;
+				while (keys[++i2]) {
+					
+					if (!(rule1 = rule0.cssRules[keys[i2].i])) continue;
+					
+					if ((kf = calc(keys[i2].v, keys[i2].i, rule0.cssRules)) === 'to' || range(parseInt(kf),0,100) >= 100) {
+						
+						i3 = keys[i2].i + 1;
+						while (rule0.cssRules[i3]) rule0.deleteRule(rule0.cssRules[i3].keyText);
+						
+					}
+					
+					rule1.keyText = kf;
+					
+					if (!rule0.cssRules[keys[i2].i + 1]) break;
+					
+				}
+				break;
+			}
+			
+			if (rule0) return;
+			
+		}
+		
+	}
+	
+};
 
 settingsAvailable.then(settings => addEventListener('load', () => boot(settings), eventOnce)).catch(xError);

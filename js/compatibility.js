@@ -4,7 +4,17 @@ const settingsAvailable = new Promise((rs, rj) => {
 	
 	preset.addEventListener(
 			'error',
-			error => alert('A file "settings.preset.json" is required, but it does\'nt seem to exist.'),
+			error => {
+				
+				const downloadLink = document.createElement('a');
+				
+				downloadLink.href = 'https://github.com/MissingBlue/Kawaii-Slide-Show/releases',
+				downloadLink.textContent = 'Please download the latest or any version from GitHub.',
+				document.body.appendChild(downloadLink),
+				
+				alert('A file "settings.preset.json" is required, but it does\'nt seem to exist.');
+				
+			},
 			{ once: true }
 		),
 	preset.addEventListener('load', event => {
