@@ -44,6 +44,12 @@ body {
 	padding: 1rem;
 	
 }
+body.initialized {
+	
+	animation: interval var(--a-duration) linear 0s infinite forwards running;
+	
+}
+@keyframes interval{from{}to{}}
 body.dev {
 	
 	--body-bg-transparent: var(--bg-transparent);

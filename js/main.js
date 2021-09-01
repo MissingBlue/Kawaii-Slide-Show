@@ -1,5 +1,5 @@
-//todo: フォーカスポイント機能*延期ないし中止: 仮に実装する場合、任意の数設定できるようにする。
-let profileName;
+//todo:	フォーカスポイント機能*延期ないし中止: 仮に実装する場合、任意の数設定できるようにする。
+//			特定の画像の全面を覆いそこに任意の文字表示。
 const
 customElementTagNames = [ 'c-is', 'c-ii' ],
 definesCustomElements = tagNames => new Promise((rs, rj) => {
@@ -21,6 +21,8 @@ definesCustomElements = tagNames => new Promise((rs, rj) => {
 }),
 boot = cfg => {
 	
+	let i,l,k,k0, profileName,css,element;
+	
 	try {
 		
 		if (!cfg || typeof cfg !== 'object') throw new TypeError('The setting data must be type "object".');
@@ -28,13 +30,17 @@ boot = cfg => {
 		if (!cfg.profile || typeof cfg.profile !== 'object')
 			throw new TypeError('The profile data must be type "object".');
 		
-		if (typeof (profileName = ''+cfg.profileName.trim()) !== 'string')
-			throw new TypeError('The profileName must be "string"');
-		
-		profileName[profileName.length - 1] === '*' &&
-			(profileName = profileName.slice(0,-1), document.body.classList.add('dev'));
-		
-		if (!(profileName in cfg.profile)) throw new Error(`There are no profile such "${profileName}"`);
+		i = -1, l = (profileName = Array.isArray(cfg.profileName) ? cfg.profileName : [ cfg.profileName ]).length;
+		while (++i < l) {
+			
+			if (typeof (profileName[i] = ''+profileName[i].trim()) !== 'string')
+				throw new TypeError('The profileName must be "string"');
+			if (!(profileName[i] in cfg.profile)) throw new Error(`There are no profile such "${profileName[i]}"`);
+			
+			for (k in cfg.profile[profileName[i]])
+				cfg[k] = k === 'files' ? [ ...cfg[k], ...cfg.profile[profileName[i]][k] ] : cfg.profile[profileName[i]][k];
+			
+		}
 		
 	} catch (error) {
 		
@@ -43,21 +49,25 @@ boot = cfg => {
 		
 	}
 	
-	const css = document.createElement('link');
-	let k;
+	if (cfg.attr && typeof cfg.attr === 'object') {
+		
+		for (k in cfg.attr)
+			if (element = document.querySelector(k)) for (k0 in cfg.attr[k]) element.setAttribute(k0, cfg.attr[k][k0]);
+		
+	}
 	
-	for (k in cfg.profile[profileName]) cfg[k] = cfg.profile[profileName][k];
-	
-	css.rel = 'stylesheet',
-	css.href = `css/${profileName}.css`,
-	document.head.appendChild(css),
+	i = -1, l = (cfg.css = Array.isArray(cfg.css) ? cfg.css : [ cfg.css ]).length;
+	while (++i < l) cfg.css[i] && (
+												(css = document.createElement('link')).rel = 'stylesheet',
+												css.href = cfg.css[i],
+												document.head.appendChild(css)
+											);
 	
 	defineCustomElements(CHTMLImageSeq, CHTMLImageSeqItem),
-	
 	definesCustomElements(customElementTagNames).then(() => init(cfg)).catch(xError);
 	
 },
-init = cfg => {
+init = async function (cfg) {
 	
 	const	dur = parseInt(cfg.dur),
 			tdur = range(parseFloat(cfg.transition_dur), 0,1),
@@ -67,6 +77,9 @@ init = cfg => {
 			files = cfg.files,
 			filesLength = files.length,
 			totalDur = dur * filesLength,
+			
+			asset = (cfg.asset && typeof cfg.asset === 'object') ? cfg.asset : {},
+			resource = new Resource(cfg.resource),
 			
 			is = document.createElement('c-is'),
 			iss = [],
@@ -79,7 +92,7 @@ init = cfg => {
 			
 			iteratedAnimation = event => {
 					
-					if (event.animationName !== 'transition') return;
+					if (event.animationName !== 'interval') return;
 					
 					const	elapse = event.elapsedTime,
 							index = (elapse - totalDur * (elapse / totalDur | 0)) / totalDur * filesLength | 0,
@@ -91,6 +104,46 @@ init = cfg => {
 							mh = getCSSV(appNode, 'image-seq-max-height'),
 							lc = parseInt(lh) / parseInt(mh), c = parseInt(h) / parseInt(mh),
 							cc = 1.1;
+					let i,i0,aid,rid;
+					
+					if (cfg.resource) {
+						
+						if (files[lastIndex].assets) {
+							
+							i = -1;
+							while (aid = files[lastIndex].assets[++i]) {
+								if (!Array.isArray(aid)) continue;
+								i0 = -1;
+								while (aid[++i0]) typeof aid[i0].exit === 'string' && aid[i0][aid[i0].exit]();
+							}
+							
+						}
+						
+						if (files[index].assets) {
+							
+							i = -1, Array.isArray(files[index].assets) || (files[index].assets = [ files[index].assets ]);
+							while (aid = files[index].assets[++i]) {
+								
+								if (typeof aid === 'string') {
+									
+									if (!asset[aid]) continue;
+									
+									i0 = -1;
+									while (rid = asset[aid][++i0])
+										typeof rid === 'string' && (rid = resource.get(rid)) && (asset[aid][i0] = rid);
+									
+									aid = files[index].assets[i] = asset[aid];
+									
+								}
+								
+								i0 = -1;
+								while (aid[++i0]) aid[i0][aid[i0].exec]();
+								
+							}
+							
+						}
+						
+					}
 					
 					files[index].text_a ? (textNode.dataset.textA = files[index].text_a) : delete textNode.dataset.textA,
 					files[index].text_b ? (textNode.dataset.textB = files[index].text_b) : delete textNode.dataset.textB,
@@ -114,7 +167,7 @@ init = cfg => {
 					setCSSV(body, 'correction', c + (1 - c) / cc);
 					
 				};
-	let i,i0;
+	let i;
 	
 	'app_width' in cfg && !isNaN(parseInt(cfg.app_width)) &&
 		(appNode.style.setProperty('width', cfg.app_width, 'important')),
@@ -137,8 +190,8 @@ init = cfg => {
 					{ i: 1, v: 100 * trdelay }, { i: 2, v: 100 * (1 - trdelay) * trdur + (100 * trdelay) }, { i: 3 }
 				),
 			
-			frameNode.addEventListener('animationstart', iteratedAnimation, eventOnce),
-			frameNode.addEventListener('animationiteration', iteratedAnimation),
+			body.addEventListener('animationstart', iteratedAnimation, eventOnce),
+			body.addEventListener('animationiteration', iteratedAnimation),
 			body.classList.add('initialized')
 		), eventOnce),
 	

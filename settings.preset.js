@@ -9,12 +9,12 @@ transition_dur: 0.04,
 // 例えば dur が 5 の場合、この値を 0.04 にすると 5 * 0.04 = 0.2 になるので、トランジションは 0.2 秒間で行われることになる。
 // この値を 1 にすると、ファイルの表示の開始から終了までの全時間を通じてトランジションが行われ、0 にするとトランジションがまったく行われない。
 
-transition_reflection_delay: 0,
+transition_reflection_delay: 0.15,
 // トランジション時の反射光演出の開始時間。
 // 画像表示中に反射光を発生させるタイミングを、表示時間全体を 0 から 1 として、その範囲の小数値で指定する。
 // 例えば dur: 5, transition_reflection_delay: 0.25 であれば、 5 ＊ 0.25 で、表示切替後 1.25 秒後に反射光が発生する。
 // 1 を指定すると、反射光演出がオフになる。
-transition_reflection: 0,
+transition_reflection: 0.4,
 // トランジション発生時の反射光演出の効果時間。
 // transition_reflection_delay 同様 0 から 1 の範囲の小数値で指定するが、
 // その範囲は dur - (dur * transition_reflection_delay) になる。
@@ -47,25 +47,49 @@ files: [
 // 角括弧 [] に囲まれた中に画像ファイルの相対パスか絶対パス、または URL を、シングルクォーテーション(')かダブルクォーテーション(")で囲んで指定する。
 // 複数ある場合はコンマ(,)で区切って並べて指定する。このリストに並べた順で表示を行う。
 
-// 内部処理用
-profileName: 'responsible',
-// 任意のプロファイル名の末尾にアスタリスク(*)を加えるとドキュメントの要素 body のクラスに dev が与えられる。
+resource: {
+	audios: [
+		//{ id: '', src: '', delay: 0, offset: 0, duration: true, gain: 0.05, playbackRate: 1 }
+	]
+},
+// audiosに指定した文字列ないしオブジェクト内のプロパティ src に指定したリソースを音声ファイルとして読み込む。
+// audios は複数指定でき、その際は audios の値を配列にし、その中に読み込む音声ファイルを文字列ないしオブジェクトで列挙する。
+// オブジェクトで指定した場合、音声ファイルの再生形式などのパラメーターを任意で指定できる。
+// パラメーターは主に AudioNode 内の各種コンストラクター関数が受け付けるものに準じており、具体的には以下と同名のパラメーターがそのまま使える。
+// https://developer.mozilla.org/en-US/docs/Web/API/GainNode/GainNode#parameters
+// https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode/AudioBufferSourceNode#parameters
+// ちなみに AudioBufferSourceNode のパラーメーターに相当する delay, offset, duration は、
+// それぞれ再生開始時間、音声ファイルの再生開始位置、再生時間を示し、それらの値はすべて実数（ないし整数）で指定する。
+// ただし、duration は実数として解釈できない値（例えば true など）を指定した場合、音声ファイルの元の再生時間で補完される。
+asset: {},
+// 任意のアセット名に、アセットの構成物となるリソースの id を、再生ないし表示順に配列に列挙して指定する。
+
+// 以下内部処理用
+css: 'css/responsible.css',
+
+profileName: [ 'responsible' ],
+// 任意のプロファイル名を文字列で、配列か文字列のまま指定。
+// 各プロファイル間で同名のプロパティが存在した場合、前方から後方に向けて上書きされていく。
 
 profile: {
 	
+	responsible: {
+		
+		cssvar: '{ "target-raw-rect-height[0]" : "{#h*}" }'
+		
+	},
+	
 	fixed: {
+		
+		css: 'css/fixed.css',
 		
 		app_width: '',
 		app_height: '',
 		
 		cssvar: '{"bgp-from": "calc(50% + {#w[]} * {i[]})", "bgp-to": "calc(50% + ({#w[]} * {i[]} - {#w[]} * {l[]}))", "bgi": "{u[]}", "total-duration[0]": "calc(var(--a-duration) * {l})", "bg-size-t0": "0% 0%", "bg-size-t1": "calc({w[]} * {#h*} / {h*[]}) {#h}"}'
 		
-	},
-	responsible: {
-		
-		cssvar: '{ "target-raw-rect-height[0]" : "{#h*}" }'
-		
 	}
+	
 },
 
 version: '0.1'

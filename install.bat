@@ -14,6 +14,7 @@ if not exist settings.js copy /-Y settings.preset.js settings.js
 call :isDir "img"
 
 if not exist img md img
+if not exist audios md audios
 
 echo インストールを完了しました。
 :END

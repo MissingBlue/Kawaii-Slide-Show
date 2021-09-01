@@ -16,7 +16,7 @@ body {
 	
 	--app-bg-transparent: transparent;
 	
-	background: var(--body-bg-transparent, var(--bg-transparent));
+	background: var(--body-bg-transparent, var(--app-bg-transparent));
 	box-shadow: .4rem .4rem .8rem 0rem rgba(0,0,0,.3);
 	border: 1px solid rgba(0,0,0,1);
 	border-radius: 1rem;
@@ -48,12 +48,14 @@ body {
 	
 	--w: var(--image-seq-max-width-scaled);
 	
+	--a-main: main calc(var(--a-duration) * var(--image-seq-total-length)) steps(var(--image-seq-total-length), end) 0s infinite normal forwards running, var(--fade, none), var(--popup, none);
+	
 	background-repeat: no-repeat;
 	background-size: contain;
 	background-image:	var(--image-seq-bgi);
 	background-position-y: center;
 	
-	animation: main calc(var(--a-duration) * var(--image-seq-total-length)) steps(var(--image-seq-total-length), end) 0s infinite normal forwards running, var(--fade, none), var(--popup, none),interval var(--a-duration) linear 0s infinite forwards running;
+	animation: var(--a-main);
 	
 }
 @keyframes main {
@@ -67,5 +69,4 @@ body {
 	}
 	
 }
-@keyframes interval{from{}to{}}
 
