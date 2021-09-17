@@ -3,6 +3,17 @@ hi = console.log.bind(console, 'hi'),
 Q	= (selector, root = document) => root.querySelector(selector),
 QQ	= (selector, root = document) => root.querySelectorAll(selector),
 
+int = (v, defaultValue = 0, min = 0, max = Infinity) => num(parseInt(v), defaultValue, min, max),
+dbl = (v, defaultValue = 0.0, min = 0.0, max = Infinity) => num(parseFloat(v), defaultValue, min, max),
+num = (v, defaultValue, min, max) => (Number.isNaN(v) ? (v = defaultValue) : v) <=  min ? min : v >= max ? max : v,
+stringify = (v, defaultValue = ''+v) => typeof v === 'string' ? v : defaultValue,
+arr = (v,...defaultElement) =>
+	Array.isArray(v) ? v : defaultElement.length ? [ ...defaultElement ] : v === null || v === undefined ? [] : [ v ],
+isObj = obj => obj && typeof obj === 'object' && obj,
+obje = (obj, defaultValue = {}) => isObj(obj) || defaultValue,
+objc = (obj, k,v = obj,defaultValue = { [k]: v }) =>
+	isObj(obj) ? k in obj && obj[k] !== undefined && obj[k] !== null ? obj : (obj[k] = v, obj) : defaultValue,
+
 // 等幅フォント時の文字幅を計算するために用いることを想定した関数。
 // 文字列内の文字が ASCII の範囲内の場合 1、そうでない場合を 2 としてカウントして、その合計を返す。絵文字には非対応。
 monoLength = str => {
@@ -51,7 +62,10 @@ defineCustomElements = (...customElementConstructors) => {
 	while ($ = customElementConstructors[++i])
 		typeof $.tagName === 'string' && isTagName.test($.tagName) && customElements.define($.tagName, $);
 	
-};
+},
+
+get = (obj, ...keys) =>	keys.length ? obj && typeof obj === 'object' && keys[0] in obj ?
+									get(obj[keys[0]], ...(keys.shift(), keys)) : undefined : obj;
 
 class ExtensionNode extends HTMLElement {
 	

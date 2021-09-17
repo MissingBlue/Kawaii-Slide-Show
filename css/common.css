@@ -5,8 +5,14 @@
 :root {
 	
 	--a-duration: 5s;
+	--a-current-duration: var(--a-duration);
+	--a-iteration-count: infinite;
+	--a-current-iteration-count: var(--a-iteration-count);
+	--a-play-state: running;
 	
 	--image-seq-scale: 1;
+	
+	--window-padding: 2rem;
 	
 	--app-text-color: rgba(255,255,255,1);
 	
@@ -22,10 +28,14 @@
 								var(--app-text-font-size)/var(--app-text-line-height)
 								var(--app-text-font-family);
 	
-	--app-anime-default-behavior: var(--a-duration) linear 0s 1 normal forwards running;
-	
+	--app-anime-default-rule: normal forwards var(--a-play-state);
+	--app-anime-default-behavior: var(--a-duration) linear 0s 1 var(--app-anime-default-rule);
+	/*
 	--bg-transparent-tile-color-0: rgb(120,120,120);
 	--bg-transparent-tile-color-1: rgb(160,160,160);
+	*/
+	--bg-transparent-tile-color-0: rgb(80,80,80);
+	--bg-transparent-tile-color-1: rgb(112,112,112);
 	--bg-transparent: conic-gradient(var(--bg-transparent-tile-color-0) 0.25turn, var(--bg-transparent-tile-color-1) 0.25turn 0.5turn, var(--bg-transparent-tile-color-0) 0.5turn 0.75turn, var(--bg-transparent-tile-color-1) 0.75turn) top left / 80px 80px repeat;
 	
 	color: var(--app-text-color);
@@ -39,19 +49,61 @@
 }
 body {
 	
-	background-color: transparent;
+	--body-bg-transparent: transparent;
+	
+	align-items: var(--flex-align-items, normal);
+	background: var(--body-bg-transparent, var(--bg-transparent));
 	box-sizing: border-box;
-	padding: 1rem;
+	display: flex;
+	justify-content: var(--flex-justify-content, normal);
+	overflow: hidden;
+	padding: var(--window-padding);
 	
 }
-body.initialized {
-	
-	animation: interval var(--a-duration) linear 0s infinite forwards running;
-	
-}
-@keyframes interval{from{}to{}}
-body.dev {
+.dev body {
 	
 	--body-bg-transparent: var(--bg-transparent);
 	
 }
+body.initialized {
+	
+	animation:	interval
+					var(--a-current-duration, var(--a-duration))
+					end
+					0s
+					var(--a-current-iteration-count, var(--a-iteration-count))
+					var(--app-anime-default-rule);
+	
+}
+@keyframes interval{from{}to{}}
+
+#app {
+	
+	align-items: var(--flex-align-items, normal);
+	display: flex;
+	height: 100%;
+	justify-content: var(--flex-justify-content, normal);
+	
+}
+#frame {}
+#screen {}
+
+.f1 { --flex-align-items: flex-end; --flex-justify-content: flex-start; }
+.f2 { --flex-align-items: flex-end; --flex-justify-content: center; }
+.f3 { --flex-align-items: flex-end; --flex-justify-content: flex-end; }
+.f4 { --flex-align-items: center; --flex-justify-content: flex-start; }
+.f5 { --flex-align-items: center; --flex-justify-content: center; }
+.f6 { --flex-align-items: center; --flex-justify-content: flex-end; }
+.f7 { --flex-align-items: flex-start; --flex-justify-content: flex-start; }
+.f8 { --flex-align-items: flex-start; --flex-justify-content: center; }
+.f9 { --flex-align-items: flex-start; --flex-justify-content: flex-end; }
+
+.f1 .viewport { --bg-pos-flex: left bottom; }
+.f2 .viewport { --bg-pos-flex: center bottom; }
+.f3 .viewport { --bg-pos-flex: right bottom; }
+.f4 .viewport { --bg-pos-flex: left center; }
+.f5 .viewport { --bg-pos-flex: center center; }
+.f6 .viewport { --bg-pos-flex: right center; }
+.f7 .viewport { --bg-pos-flex: left top; }
+.f8 .viewport { --bg-pos-flex: center top; }
+.f9 .viewport { --bg-pos-flex: right top; }

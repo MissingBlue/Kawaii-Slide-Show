@@ -1,0 +1,62 @@
+:root.dev {
+	
+	--bg-transparent-tile-color-0: rgb(220,220,220);
+	--bg-transparent-tile-color-1: rgb(232,232,232);
+	
+}
+.viewport {
+	
+	--border-color-lighten: rgba(216,216,216,1);
+	--border-color-draken: rgba(80,80,80,1);
+	--box-shadow-glow-pos-left: .6rem;
+	--box-shadow-glow-pos-top: var(--box-shadow-glow-pos-left);
+	
+	--glow-color: rgba(0,0,0,.4);
+	
+	--last-h: calc(var(--last-height) * (var(--image-seq-target-raw-rect-height-0) / var(--last-raw-height)) * var(--last-correction));
+	--last-w: calc(var(--last-width) * (var(--image-seq-target-raw-rect-height-0) / var(--last-raw-height)) * var(--last-correction));
+	--h: calc(var(--height) * (var(--image-seq-target-raw-rect-height-0) / var(--raw-height)) * var(--correction));
+	--w: calc(var(--width) * (var(--image-seq-target-raw-rect-height-0) / var(--raw-height)) * var(--correction));
+	
+	align-items: flex-end;
+	background: transparent var(--bgi) var(--bg-pos-flex)/contain no-repeat;
+	border-radius: 2rem;
+	box-shadow:	0 0 0rem 1px var(--border-color-lighten),
+					0 0 0rem 2px var(--border-color-draken),
+					var(--box-shadow-glow-pos-left-top) 2rem .2rem var(--glow-color);
+	display: flex;
+	height: var(--h);
+	justify-content: var(--flex-justify-content);
+	width: var(--w);
+	
+	animation: transition calc(var(--a-current-duration) * .04) ease-in 0s 1 var(--app-anime-default-rule);
+	
+}
+@keyframes transition {
+	0% {
+		height: var(--last-h);
+		width: var(--last-w);
+	}
+	100% {
+		height: var(--h);
+		width: var(--w);
+	}
+}
+
+.f1 .viewport { --box-shadow-glow-pos-left-top: calc(var(--box-shadow-glow-pos-left) * -1) var(--box-shadow-glow-pos-top); }
+.f2 .viewport { --box-shadow-glow-pos-left-top: 0 var(--box-shadow-glow-pos-top); }
+.f3 .viewport { --box-shadow-glow-pos-left-top: var(--box-shadow-glow-pos-left) var(--box-shadow-glow-pos-top); }
+.f4 .viewport { --box-shadow-glow-pos-left-top: calc(var(--box-shadow-glow-pos-left) * -1) 0; }
+.f5 .viewport { --box-shadow-glow-pos-left-top: 0 0; }
+.f6 .viewport { --box-shadow-glow-pos-left-top: var(--box-shadow-glow-pos-left) 0; }
+.f7 .viewport { --box-shadow-glow-pos-left-top: calc(var(--box-shadow-glow-pos-left) * -1) calc(var(--box-shadow-glow-pos-top) * -1); }
+.f8 .viewport { --box-shadow-glow-pos-left-top: 0 calc(var(--box-shadow-glow-pos-top) * -1); }
+.f9 .viewport { --box-shadow-glow-pos-left-top: var(--box-shadow-glow-pos-left) calc(var(--box-shadow-glow-pos-top) * -1); }
+
+.author {
+	
+	align-items: flex-end;
+	font: normal normal 1000 2rem/1 "sans-serif", "メイリオ";
+	text-shadow: 0 0 .5rem rgb(0,0,0);
+	
+}
