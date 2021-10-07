@@ -39,6 +39,7 @@ files: [
 "img/sample-0.png",
 { file_path: "img/sample-1.png", file_author: 'SAMPLE' },
 "img/sample-2.png",
+{ file_path: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Thuringia_Eisenach_asv2020-07_img23_Wartburg_Castle.jpg/800px-Thuringia_Eisenach_asv2020-07_img23_Wartburg_Castle.jpg", file_author: "«© A.Savin, WikiCommons»" }
 
 ],
 // 表示する画像のリスト。
@@ -153,19 +154,19 @@ profile: {
 				{
 					end: { event: { animationend: [ { target: true, count: 1, name: 'element-preset-anime' } ] } },
 					attr: { 'class': 'scene 0', 'data-dur': 0.15 },
-					style: { '--dur': '?0.15?s', '--func': 'ease', '--count': 1, '--from-x': '-45%', '--from-y': '-35%', '--from-w': '250%', '--from-h': '250%', '--from-r': '0deg', '--to-y': '-45%' }
+					style: { '--dur': 'var(--dur-0, ?0.15?s)', '--func': 'var(--func-0, ease)', '--count': 'var(--count-0, 1)', '--from-x': 'var(--from-x-0, -45%)', '--from-y': 'var(--from-y-0, -35%)', '--from-w': 'var(--from-w-0, 250%)', '--from-h': 'var(--from-h-0, 250%)', '--from-r': 'var(--from-r-0, 0deg)', '--to-x': 'var(--to-x-0, var(--from-x))', '--to-y': 'var(--to-y-0, var(--from-y))' }
 				},
 				{
 					begin: { promise: { index: -1, when: 'end' } },
 					end: { event: { animationend: [ { target: true, count: 1, name: 'element-preset-anime' } ] } },
 					attr: { 'class': 'scene 1', 'data-dur': 0.15, 'data-delayed-delay': '0' },
-					style: { '--dur': '?0.15?s', '--func': 'ease', '--count': 1, '--from-x': '-165%', '--from-y': '-20%', '--from-w': '400%', '--from-h': '400%', '--from-r': '0deg', '--to-x': '-180%' }
+					style: { '--dur': 'var(--dur-1, ?0.15?s)', '--func': 'var(--func-1, ease)', '--count': 'var(--count-1, 1)', '--from-x': 'var(--from-x-1, -165%)', '--from-y': 'var(--from-y-1, -20%)', '--from-w': 'var(--from-w-1, 400%)', '--from-h': 'var(--from-h-1, 400%)', '--from-r': 'var(--from-r-1, 0deg)', '--to-x': 'var(--to-x-1, var(--from-x))', '--to-y': 'var(--to-y-1, var(--from-y))' }
 				},
 				{
 					begin: { promise: { index: -1, when: 'end' } },
 					end: { event: { animationend: [ { target: true, count: 1, name: 'element-preset-anime' } ] } },
 					attr: { 'class': 'scene 2', 'data-dur': 1, 'data-delayed-delay': '0,1', 'data-delayed-delay-correction': 0.9 },
-					style: { '--dur': '!1!s', '--from-x': '0%', '--from-y': '0%', '--from-w': '100%', '--from-h': '100%', '--from-r': '0deg', '--o-0': 0, '--o-1': 1, '--o-2': 1, '--o-3': 1, '--z-index': -1 }
+					style: { '--dur': 'var(--dur-2, !1!s)', '--from-x': 'var(--from-x-2, 0%)', '--from-y': 'var(--from-y-2, 0%)', '--from-w': 'var(--from-w-2, 100%)', '--from-h': 'var(--from-h-2, 100%)', '--from-r': 'var(--from-r-2, 0deg)', '--o-0': 'var(--o-0-2, 0)', '--o-1': 'var(--o-1-2, 1)', '--o-2': 'var(--o-2-2, 1)', '--o-3': 'var(--0-3-2, 1)', '--z-index': 'var(--z-index-2, -1)' }
 				},
 				'{default_reflection}'
 			],

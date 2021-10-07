@@ -166,7 +166,7 @@ class Condition {
 		i = -1;
 		while (ev = evs[++i])	typeof ev.rejectedExecution === 'function' &&
 											ev.rejectedExecution((ev.error = Condition.REJECTED_MESSAGE_SAFELY, ev)),
-										delete event.bugun,
+										delete ev.bugun,
 										delete ev.promise;
 		
 		typeof this.rejection === 'function' && this.rejection((this.error = Condition.REJECTED_MESSAGE_SAFELY, this)),

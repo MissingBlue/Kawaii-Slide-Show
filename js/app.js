@@ -245,6 +245,7 @@ class App {
 		fe.endCond.standby(f.dur, fe.$),
 		fe.xEnd = this.createElementEnd(fe, f),
 		fe.pendingEnd = !fe.end || !!fe.end.promise;
+		//fe.pendingEnd = typeof fe.end === 'boolean' || !!fe.end.promise;
 		
 		return f.serial[f.serial.length] = fe;
 		
@@ -315,8 +316,41 @@ class App {
 			};
 		
 	}
+	/*
 	createElementEnd(fe, f) {
 		return () => (fe.beginCond.executed || Promise.resolve()).then(() => this.resolveAll(fe));
+	}
+	*/
+	createElementEnd(fe, f) {
+		
+		return () => {
+			
+			// fe.end の値が true の時、fe のすべての子要素（再帰を含む）の endCond.excuted が解決された時に、自身の endCond を解決する。
+			// 以下の fe.end === true は上記の仕様の実装だが、最適化および短絡化はほぼ行なっていない。
+			
+			if (fe.end === true) {
+				
+				let i,i0;
+				
+				const fetchEnd = fe => {
+					let i, ends = [];
+					if (Array.isArray(fe.children)) {
+						i = -1;
+						while (fe.children[++i])
+							ends = [ ...ends, fe.children[i].endCond.executed, ...fetchEnd(fe.children[i]) ];
+					}
+					return ends;
+				},
+				end = () => ++i0 >= ends.length && this.resolveAll(fe),
+				ends = fetchEnd(fe);
+				
+				i = -1, i0 = 0;
+				while (ends[++i]) ends[i].then(end);
+				
+			} else (fe.beginCond.executed || Promise.resolve()).then(() => this.resolveAll(fe));
+			
+		}
+		
 	}
 	resolveAll(fe, when = true) {
 		
@@ -603,8 +637,8 @@ class App {
 		return lastIndex === undefined ? str : replaced + str.substring(lastIndex);
 		
 	}
-	// このメソッドは一見シンプルだが、内部処理用の setAttr のラッパー関数で、無用なオブジェクトを生成するためコストは高く、
-	// またそのコストについても仕様上の手抜き以上の意味はない。
+	// このメソッドは一見シンプルだが、内部処理用の setAttr のラッパー関数で、想定処理内容に対し実行コストが高く、
+	// そのコストにも実装上の手抜き以上の意味はない。
 	static setAttrTo(attr, rx,dict,replacer) {
 		
 		let i,k, elms;
