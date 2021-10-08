@@ -10,11 +10,20 @@
 	position: relative;
 	
 }
-#screen {
+#screen, #screen > div:only-child {
 	
 	display: flex;
 	
 }
+.f1 #screen, .f1 #screen > div:only-child { flex-direction: row }
+.f2 #screen, .f2 #screen > div:only-child { flex-direction: column }
+.f3 #screen, .f3 #screen > div:only-child { flex-direction: row-reverse }
+.f4 #screen, .f4 #screen > div:only-child { flex-direction: row }
+.f5 #screen, .f5 #screen > div:only-child { flex-direction: column }
+.f6 #screen, .f6 #screen > div:only-child { flex-direction: row-reverse }
+.f7 #screen, .f7 #screen > div:only-child { flex-direction: row }
+.f8 #screen, .f8 #screen > div:only-child { flex-direction: column }
+.f9 #screen, .f9 #screen > div:only-child { flex-direction: row-reverse }
 .viewport {
 	
 	--border-color: rgba(216,216,216,1);
@@ -26,9 +35,12 @@
 	--h: calc(var(--height) * (var(--image-seq-target-raw-rect-height-0) / var(--raw-height)) * var(--correction));
 	--w: calc(var(--width) * (var(--image-seq-target-raw-rect-height-0) / var(--raw-height)) * var(--correction));
 	
+	align-items: var(--viewport-align-items, flex-start);
 	border-radius: 2rem;
 	box-shadow: 0 0 0rem 1px var(--border-color), 0 0 0rem 2px rgba(80,80,80,1), 0 0 2rem .2rem var(--border-color);
+	display: flex;
 	height: var(--h);
+	justify-content: var(--viewport-justify-content, flex-start);
 	overflow: hidden;
 	position: relative;
 	transform: rotate3d(0,0,0, 0deg);
@@ -41,6 +53,10 @@
 					transition2 var(--transition-duration-1) ease-in calc(var(--a-current-duration) - var(--transition-duration-1)) 1 reverse forwards running,
 					glow calc(var(--a-current-duration) / 2) ease-in 0s 2 alternate-reverse forwards running;
 	
+}
+[data-current-label~="flex-center"] .viewport {
+	--viewport-align-items: center;
+	--viewport-justify-content: center;
 }
 @keyframes transition {
 	0% {
@@ -268,6 +284,7 @@
 .scene {
 	
 	background:	var(--bgi) var(--bg-pos-flex)/contain no-repeat var(--bgc, transparent);
+	will-change: contents;
 	
 	position: absolute;
 	
@@ -280,6 +297,7 @@
 }
 .scene:not(.default) {
 	
+	transform-origin: var(--transform-origin, left top);
 	z-index: var(--z-index, 0);
 	
 	animation: element-preset-anime var(--dur, var(--a-current-duration, var(--a-duration))) var(--func, ease) 0s var(--count, 1) normal var(--fill, forwards) running;
@@ -292,7 +310,7 @@
 		left: var(--from-x);
 		opacity: var(--o-0, 0);
 		top: var(--from-y);
-		transform: rotate(var(--from-r));
+		transform: var(--from-t, none);
 		width: var(--from-w);
 	}
 	30% {
@@ -306,8 +324,178 @@
 		left: var(--to-x, var(--from-x));
 		opacity: var(--o-3, 0);
 		top: var(--to-y, var(--from-y));
-		transform: rotate(var(--to-r, var(--from-r)));
+		transform: var(--to-t, var(--from-t));
 		width: var(--to-w, var(--from-w));
 	}
 	
+}
+
+.timeout {
+	
+	--timeout-a-dur-max: .95;
+	--timeout-a-dur: calc(var(--a-current-duration) * var(--timeout-a-dur-max));
+	--timeout-blink-count: 3;
+	/* 以下の変数の値は .02 が好ましいが firefox と chrome では異なり、chrome では想定しない長さになるため chrome に合わせている */
+	--timeout-blink-dur-length: .015;
+	--timeout-blink-dur: calc(var(--timeout-a-dur) * var(--timeout-blink-dur-length));
+	--timeout-margin-value: .6rem;
+	--timeout-transform-to: scale(1,1);
+	--timeout-length-to: 100%;
+	--timeout-size: .5rem;
+	--timeout-background-color-rgb-from: 200,200,200;
+	--timeout-background-color-rgb-to: 240,240,240;
+	--timeout-background-color-from: rgba(var(--timeout-background-color-rgb-from),1);
+	--timeout-background-color-to: rgba(var(--timeout-background-color-rgb-to),1);
+	--timeout-border-color-rgb: 0,0,0;
+	--timeout-border-color: rgba(var(--timeout-border-color-rgb),.8);
+	
+	border-radius: .4rem;
+	background-color: var(--timeout-background-color-from);
+	border: 1px solid var(--timeout-border-color);
+	height: var(--timeout-height);
+	margin: var(--timeout-margin);
+	transform: var(--timeout-transform-from);
+	transform-origin: var(--timeout-transform-origin-from);
+	width: var(--timeout-width);
+	
+	animation:	timeout var(--timeout-a-dur) ease-out 0s 1 normal forwards running,
+					/* 以下の animation-timing-function は steps(2,jump-none) を指定すべきだが、固定値 jump は chrome 77 未満では非対応 */
+					timeout-blink var(--timeout-blink-dur) linear calc(var(--timeout-a-dur) - var(--timeout-blink-dur) * var(--timeout-blink-count)) var(--timeout-blink-count) normal backwards running,
+					timeout-end calc(var(--a-current-duration) - var(--timeout-a-dur)) ease-in var(--timeout-a-dur) 1 normal forwards running;
+	
+}
+.f1 .timeout, .f4 .timeout, .f7 .timeout { --timeout-margin: 0 var(--timeout-margin-value) 0 0; }
+.f2 .timeout, .f5 .timeout, .f8 .timeout { --timeout-margin: 0 0 var(--timeout-margin-value) 0; }
+.f3 .timeout, .f6 .timeout, .f9 .timeout { --timeout-margin: 0 0 0 var(--timeout-margin-value); }
+.f1 .timeout, .f3 .timeout, .f4 .timeout, .f6 .timeout, .f7 .timeout, .f9 .timeout {
+	--timeout-transform-from: scale(1,0);
+	--timeout-transform-origin-from: bottom;
+	--timeout-transform-origin-to: top;
+	--timeout-height: var(--timeout-length);
+	--timeout-width: var(--timeout-size);
+}
+.f2 .timeout, .f5 .timeout, .f8 .timeout {
+	--timeout-transform-from: scale(0,1);
+	--timeout-transform-origin-from: left;
+	--timeout-transform-origin-to: right;
+	--timeout-height: var(--timeout-size);
+	--timeout-width: var(--timeout-length);
+}
+@keyframes timeout {
+	0% {
+		background-color: var(--timeout-background-color-from);
+		opacity: 0;
+		transform: var(--timeout-transform-from);
+	}
+	15% {
+		opacity: 0;
+	}
+	50% {
+		background-color: var(--timeout-background-color-from);
+		opacity: 1;
+	}
+	100% {
+		background-color: var(--timeout-background-color-to);
+		opacity: 1;
+		transform: var(--timeout-transform-to);
+	}
+}
+@keyframes timeout-blink {
+	0% {
+		background-color: rgba(var(--timeout-background-color-rgb-from),1);
+		border-color: rgba(var(--timeout-border-color-rgb),1);
+	}
+	50% {
+		background-color: rgba(var(--timeout-background-color-rgb-from),1);
+		border-color: rgba(var(--timeout-border-color-rgb),1);
+	}
+	50.1% {
+		background-color: rgba(var(--timeout-background-color-rgb-from),0);
+		border-color: rgba(var(--timeout-border-color-rgb),0);
+	}
+	100% {
+		background-color: rgba(var(--timeout-background-color-rgb-from),0);
+		border-color: rgba(var(--timeout-border-color-rgb),0);
+	}
+	/*
+	from {
+		background-color: rgba(var(--timeout-background-color-rgb-from),1);
+		border-color: rgba(var(--timeout-border-color-rgb),1);
+	}
+	to {
+		background-color: rgba(var(--timeout-background-color-rgb-from),0);
+		border-color: rgba(var(--timeout-border-color-rgb),0);
+	}
+	*/
+}
+@keyframes timeout-end {
+	from {
+		background-color: var(--timeout-background-color-to);
+		opacity: 1;
+		transform: var(--timeout-transform-to);
+		transform-origin: var(--timeout-transform-origin-to);
+	}
+	to {
+		background-color: var(--timeout-background-color-from);
+		opacity: 0;
+		transform: var(--timeout-transform-from);
+		transform-origin: var(--timeout-transform-origin-to);
+	}
+}
+
+[data-note] .note {
+	
+	--bg-color-0: rgba(255,120,120,1);
+	--bg-color-1: rgba(255,255,255,0);
+	--size: 4.5rem;
+	--delay: calc(var(--a-current-duration) * 1 / 10);
+	
+	align-items: center;
+	background: linear-gradient(var(--bg-color-0),var(--bg-color-1) 100%);
+	border-radius: 100%;
+	display: flex;
+	height: var(--size);
+	justify-content: center;
+	left: var(--note-left);
+	position: absolute;
+	right: var(--note-right);
+	top: 0;
+	transform: var(--note-transform-from);
+	visibility: visible;
+	width: var(--size);
+	will-change: contents;
+	z-index: 1;
+	
+	animation: note calc((var(--a-current-duration) - var(--delay)) / 2) ease var(--delay) 2 alternate forwards running;
+	
+}
+.f2 .note, .f3 .note, .f5 .note, .f6 .note, .f8 .note, .f9 .note {
+	--note-left: 0;
+	--note-right: unset;
+	--note-transform-from: translate(-25%,-25%) rotate(0deg) scale(0,0);
+	--note-transform-to: translate(-25%,-25%) rotate(-10deg) scale(1,1);
+}
+.f1 .note, .f4 .note, .f7 .note {
+	--note-left: unset;
+	--note-right: 0;
+	--note-transform-from: translate(25%,-25%) rotate(0deg) scale(0,0);
+	--note-transform-to: translate(25%,-25%) rotate(-10deg) scale(1,1);
+}
+@keyframes note {
+	0% {
+		transform: var(--note-transform-from);
+	}
+	5% {
+		transform: var(--note-transform-to);
+	}
+	100% {
+		transform: var(--note-transform-to);
+	}
+}
+[data-note~="latest"] .note::before {
+	content: "NEW";
+	font-family: "Arial Black";
+	font-size: 2.5rem;
+	letter-spacing: -4px;
+	text-shadow: .2rem .2rem 0 rgba(0,0,0,1);
 }

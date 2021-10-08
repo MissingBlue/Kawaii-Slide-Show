@@ -45,6 +45,7 @@ class App {
 		
 		this.dur = cfg.dur,
 		this.pos = cfg.position,
+		this.cue = this.cfg.cue,
 		
 		this.cc = 1.1,
 		
@@ -57,13 +58,21 @@ class App {
 		
 		(this.is = document.createElement('c-is')).ifor = 'app',
 		this.is.setAttribute('cvar', cfg.cssvar),
-		this.is.addEventListener('updated-all', event => (
+		this.is.addEventListener('updated-all', event => {
 				
-				this.prefetch(),
-				this.transit(this.files[0], this.files[this.files.length - 1]),
+				
+				this.prefetch();
+				
+				const l = this.files.length;
+				let l0 = l - 1;
+				
+				this.transit(
+						this.files[this.cue = int(this.cue < 0 ? l + this.cue : this.cue, 0, 0, l0)],
+						this.files[int(this.cue - 1, l0, 0, l0)]
+					),
 				this.is.addEventListener('updated-all', this.updatedAll)
 				
-			), App.eventOnce),
+			}, App.eventOnce),
 		
 		this.appendFile(...arr(cfg.files)),
 		
@@ -245,7 +254,6 @@ class App {
 		fe.endCond.standby(f.dur, fe.$),
 		fe.xEnd = this.createElementEnd(fe, f),
 		fe.pendingEnd = !fe.end || !!fe.end.promise;
-		//fe.pendingEnd = typeof fe.end === 'boolean' || !!fe.end.promise;
 		
 		return f.serial[f.serial.length] = fe;
 		
@@ -325,27 +333,16 @@ class App {
 		
 		return () => {
 			
-			// fe.end の値が true の時、fe のすべての子要素（再帰を含む）の endCond.excuted が解決された時に、自身の endCond を解決する。
-			// 以下の fe.end === true は上記の仕様の実装だが、最適化および短絡化はほぼ行なっていない。
+			// fe.end の値が true の時、
+			// 自身ののすべての子要素（再帰を含む）の endCond.excuted が解決された時に、自身の endCond を解決する。
 			
 			if (fe.end === true) {
 				
+				const end = () => ++i0 >= ends.length && this.resolveAll(fe), ends = App.fetchRecursive(fe, 'endCond');
 				let i,i0;
 				
-				const fetchEnd = fe => {
-					let i, ends = [];
-					if (Array.isArray(fe.children)) {
-						i = -1;
-						while (fe.children[++i])
-							ends = [ ...ends, fe.children[i].endCond.executed, ...fetchEnd(fe.children[i]) ];
-					}
-					return ends;
-				},
-				end = () => ++i0 >= ends.length && this.resolveAll(fe),
-				ends = fetchEnd(fe);
-				
 				i = -1, i0 = 0;
-				while (ends[++i]) ends[i].then(end);
+				while (ends[++i]) ends[i].executed.then(end);
 				
 			} else (fe.beginCond.executed || Promise.resolve()).then(() => this.resolveAll(fe));
 			
@@ -454,6 +451,7 @@ class App {
 		this.appNode.dataset.current = typeof f.id === 'string' ? f.id : '',
 		this.appNode.dataset.currentLabel =
 			typeof f.labels === 'string' ? f.labels : Array.isArray(f.labels) ? f.labels.join(' ') : '',
+		this.appNode.dataset.currentLabel === '' && delete this.appNode.dataset.currentLabel,
 		
 		App.setCSSV(this.body, f.ccv),
 		
@@ -692,6 +690,25 @@ class App {
 			json = null;
 		}
 		return json;
+	}
+	static fetchRecursive(node, key, childrenName = 'children') {
+		
+		const children = node.children, values = [];
+		let i,i0,l0,vi, child,values0;
+		
+		if (Array.isArray(children)) {
+			
+			i = -1, vi = -1;
+			while (child = children[++i]) {
+				key in child && (values[++vi] = child[key]);
+				if (childrenName in child && (i0 = -1, l0 = (values0 = App.fetchRecursive(child, key)).length))
+					while (++i0 < l0) values[++vi] = values0[i0];
+			}
+			
+		}
+		
+		return values;
+		
 	}
 	
 }

@@ -29,6 +29,15 @@ profileName: [ 'simple' ],
 // 任意のプロファイル名を文字列で、配列か文字列のまま指定。
 // 各プロファイル間で同名のプロパティが存在した場合、前方から後方に向けて上書きされていく。
 
+cue: 0,
+// 指定した整数に対応する files 内の画像から再生を開始する。
+// たくさんの画像が指定された files 内の、後方のファイルの表示を、並び順を替えずに確認したい時に有用。
+// 例えば files に三つの画像 'a', 'b', 'c' を指定した場合、通常は 'a' から再生されるが、
+// cue に 1 を指定すると、'b' から再生される。
+// cue に負の整数を指定すると、files を後ろから数えた対応する位置の画像から再生する。
+// 例えば上記の例の場合、cue に -1 を指定すると、再生順は 'c', 'a', 'b', 'c' ... になる。
+// 範囲外の値を指定するか整数以外の値を指定した場合、files の先頭か最後尾に丸められる。
+
 // ファイルの情報を示すオブジェクト内にプロパティ exclusive を設定し、その値に真を示す値を指定すると、
 // リスト内に他のファイルが存在していても、そのプロパティが設定されたファイルのみ表示される。
 // 逆に言えばファイルリスト内にひとつでも exclusive を設定したファイルがあると、他のファイルは一切表示されない。
@@ -124,14 +133,62 @@ profile: {
 					{ tag: 'div', attr: { 'class': 'file-date' }, text: '[[file_date]]' }
 				]
 			},
-			default: [
+			default_simple: [
+				'{default_timeout}',
 				'{title_date}',
+				'{default_notation}',
+				{
+					end: { event: { animationend: [ { target: true, count: 2, name: 'transition2' } ] } },
+					attr: { 'class': 'viewport' },
+					children: [
+						{
+							end: { event: { animationend: [ { target: true, count: 1, name: 'element-preset-anime' } ] } },
+							attr: { 'class': 'scene 0', 'data-dur': 0.15 },
+							style: {
+								'--dur': '!1!s',
+								'--from-x': '0%',
+								'--from-y': '0%',
+								'--from-w': '100%',
+								'--from-h': '100%',
+								'--from-r': '0deg',
+								'--o-0': 0,
+								'--o-1': 1,
+								'--o-2': 1,
+								'--o-3': 1,
+								'--z-index': -1
+							}
+						},
+						{
+							end: { event: { animationend: [ { target: true, count: 1, name: 'reflection' } ] } },
+							attr: { 'class': 'reflection 0' },
+							style: { '--ref-dur': '.8s', '--ref-delay': '0s' }
+						},
+						{
+							end: { event: { animationend: [ { target: true, count: 1, name: 'reflection' } ] } },
+							attr: { 'class': 'reflection 1' },
+							style: { '--ref-dur': '.4s', '--ref-delay': '0.375s' }
+						}
+					]
+				}
+			],
+			default: [
+				'{default_timeout}',
+				'{title_date}',
+				'{default_notation}',
 				{
 					end: { event: { animationend: [ { target: true, count: 2, name: 'transition2' } ] } },
 					attr: { 'class': 'viewport' },
 					children: '{default_anime}'
 				}
 			],
+			default_notation: {
+				end: { races: true, timeout: true, event: { animationend: [ { target: true, count: 1, name: 'note' } ] } },
+				attr: { 'class': 'note' }
+			},
+			default_timeout: {
+				end: { event: { animationend: [ { target: true, count: 1, name: 'timeout-end' } ] } },
+				attr: { 'class': 'timeout' }
+			},
 			default_reflection: [
 				{
 					end: { event: { animationend: [ { target: true, count: 1, name: 'reflection' } ] } },
@@ -153,52 +210,70 @@ profile: {
 				
 				{
 					end: { event: { animationend: [ { target: true, count: 1, name: 'element-preset-anime' } ] } },
-					attr: { 'class': 'scene 0', 'data-dur': 0.15 },
-					style: { '--dur': 'var(--dur-0, ?0.15?s)', '--func': 'var(--func-0, ease)', '--count': 'var(--count-0, 1)', '--from-x': 'var(--from-x-0, -45%)', '--from-y': 'var(--from-y-0, -35%)', '--from-w': 'var(--from-w-0, 250%)', '--from-h': 'var(--from-h-0, 250%)', '--from-r': 'var(--from-r-0, 0deg)', '--to-x': 'var(--to-x-0, var(--from-x))', '--to-y': 'var(--to-y-0, var(--from-y))' }
+					attr: { 'class': 'scene 0' },
+					style: {
+						'--dur': 'var(--dur-0, ?0.15?s)',
+						'--func': 'var(--func-0, ease)',
+						'--count': 'var(--count-0, 1)',
+						'--from-x': 'var(--from-x-0, -45%)',
+						'--from-y': 'var(--from-y-0, -35%)',
+						'--from-w': 'var(--from-w-0, 250%)',
+						'--from-h': 'var(--from-h-0, 250%)',
+						'--from-t': 'var(--from-t-0, none)',
+						'--to-x': 'var(--to-x-0, var(--from-x))',
+						'--to-y': 'var(--to-y-0, var(--from-y))',
+						'--to-w': 'var(--to-w-0, var(--from-w))',
+						'--to-h': 'var(--to-h-0, var(--from-h))',
+						'--to-t': 'var(--to-t-0, var(--from-t))',
+						'--transform-origin': 'var(--transform-origin-0, left top)',
+					}
 				},
 				{
 					begin: { promise: { index: -1, when: 'end' } },
 					end: { event: { animationend: [ { target: true, count: 1, name: 'element-preset-anime' } ] } },
-					attr: { 'class': 'scene 1', 'data-dur': 0.15, 'data-delayed-delay': '0' },
-					style: { '--dur': 'var(--dur-1, ?0.15?s)', '--func': 'var(--func-1, ease)', '--count': 'var(--count-1, 1)', '--from-x': 'var(--from-x-1, -165%)', '--from-y': 'var(--from-y-1, -20%)', '--from-w': 'var(--from-w-1, 400%)', '--from-h': 'var(--from-h-1, 400%)', '--from-r': 'var(--from-r-1, 0deg)', '--to-x': 'var(--to-x-1, var(--from-x))', '--to-y': 'var(--to-y-1, var(--from-y))' }
+					attr: { 'class': 'scene 1' },
+					style: {
+						'--dur': 'var(--dur-1, ?0.15?s)',
+						'--func': 'var(--func-1, ease)',
+						'--count': 'var(--count-1, 1)',
+						'--from-x': 'var(--from-x-1, -165%)',
+						'--from-y': 'var(--from-y-1, -20%)',
+						'--from-w': 'var(--from-w-1, 400%)',
+						'--from-h': 'var(--from-h-1, 400%)',
+						'--from-t': 'var(--from-t-1, none)',
+						'--to-x': 'var(--to-x-1, var(--from-x))',
+						'--to-y': 'var(--to-y-1, var(--from-y))',
+						'--to-w': 'var(--to-w-1, var(--from-w))',
+						'--to-h': 'var(--to-h-1, var(--from-h))',
+						'--to-t': 'var(--to-t-1, var(--from-t))',
+						'--transform-origin': 'var(--transform-origin-1, left top)',
+					}
 				},
 				{
 					begin: { promise: { index: -1, when: 'end' } },
 					end: { event: { animationend: [ { target: true, count: 1, name: 'element-preset-anime' } ] } },
-					attr: { 'class': 'scene 2', 'data-dur': 1, 'data-delayed-delay': '0,1', 'data-delayed-delay-correction': 0.9 },
-					style: { '--dur': 'var(--dur-2, !1!s)', '--from-x': 'var(--from-x-2, 0%)', '--from-y': 'var(--from-y-2, 0%)', '--from-w': 'var(--from-w-2, 100%)', '--from-h': 'var(--from-h-2, 100%)', '--from-r': 'var(--from-r-2, 0deg)', '--o-0': 'var(--o-0-2, 0)', '--o-1': 'var(--o-1-2, 1)', '--o-2': 'var(--o-2-2, 1)', '--o-3': 'var(--0-3-2, 1)', '--z-index': 'var(--z-index-2, -1)' }
+					attr: { 'class': 'scene 2' },
+					style: {
+						'--dur': 'var(--dur-2, !1!s)',
+						'--from-x': 'var(--from-x-2, 0%)',
+						'--from-y': 'var(--from-y-2, 0%)',
+						'--from-w': 'var(--from-w-2, 100%)',
+						'--from-h': 'var(--from-h-2, 100%)',
+						'--from-t': 'var(--from-t-2, none)',
+						'--to-x': 'var(--to-x-2, var(--from-x))',
+						'--to-y': 'var(--to-y-2, var(--from-y))',
+						'--to-w': 'var(--to-w-2, var(--from-w))',
+						'--to-h': 'var(--to-h-2, var(--from-h))',
+						'--to-t': 'var(--to-t-2, var(--from-t))',
+						'--o-0': 'var(--o-0-2, 0)',
+						'--o-1': 'var(--o-1-2, 1)',
+						'--o-2': 'var(--o-2-2, 1)',
+						'--o-3': 'var(--0-3-2, 1)',
+						'--align-items': 'var(--align-items-2, flex-start)',
+						'--z-index': 'var(--z-index-2, -1)'
+					}
 				},
 				'{default_reflection}'
-			],
-			default2: [
-				'{title_date}',
-				{
-					end: { event: { animationend: [ { target: true, count: 2, name: 'transition2' } ] } },
-					attr: { 'class': 'viewport' },
-					children: '{default_anime_1}'
-				}
-			],
-			default_anime_1: [
-				
-				{
-					end: { event: { animationend: [ { target: true, count: 1, name: 'element-preset-anime' } ] } },
-					attr: { 'class': 'scene 0', 'data-dur': 0.15 },
-					style: { '--dur': '?0.15?s', '--func': 'ease', '--count': 1, '--from-x': '-45%', '--from-y': '-35%', '--from-w': '250%', '--from-h': '250%', '--from-r': '0deg', '--to-y': '-45%' }
-				},
-				{
-					begin: { promise: { index: -1, when: 'end' } },
-					end: { event: { animationend: [ { target: true, count: 1, name: 'element-preset-anime' } ] } },
-					attr: { 'class': 'scene 1', 'data-dur': 0.15, 'data-delayed-delay': '0' },
-					style: { '--dur': '?0.15?s', '--func': 'ease', '--count': 1, '--from-x': '-165%', '--from-y': '-20%', '--from-w': '400%', '--from-h': '400%', '--from-r': '0deg', '--to-x': '-180%' }
-				},
-				{
-					begin: { promise: { index: -1, when: 'end' } },
-					end: { event: { animationend: [ { target: true, count: 1, name: 'element-preset-anime' } ] } },
-					attr: { 'class': 'scene 2', 'data-dur': 1, 'data-delayed-delay': '0,1', 'data-delayed-delay-correction': 0.9 },
-					style: { '--dur': '!1!s', '--from-x': '0%', '--from-y': '0%', '--from-w': '100%', '--from-h': '100%', '--from-r': '0deg', '--o-0': 0, '--o-1': 1, '--o-2': 1, '--o-3': 1, '--z-index': -1 }
-				},
-				'{default_reflection}'
-				
 			]
 		}
 		

@@ -36,6 +36,9 @@ class Condition {
 				// event は追加
 				case 'event': this.setEvents(cond[k], handleEvents); break;
 				
+				// このプロパティを指定すると、条件の中のいずれかた一致すると解決と見なす。Promise.race の動作を想定。
+				case 'races': this.races = true; break;
+				
 			}
 			
 		}
@@ -126,7 +129,7 @@ class Condition {
 		
 		return this.executed || (this.executed = new Promise((rs,rj) => {
 				
-				const evs = this.events, resolved = () => ++i0 === l0 && rs(this);
+				const evs = this.events, resolved = () => (this.races || ++i0 === l0) && rs(this);
 				let i,i0,l0, ev;
 				
 				this.resolution = rs,
