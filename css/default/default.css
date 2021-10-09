@@ -256,7 +256,7 @@
 .f3 .text, .f6 .text, .f9 .text { --move-text-transform: translate(calc(var(--text-move-amount) * -1), 0rem); }
 
 
-.text .file-title, .text .file-date {
+.text .file_name, .text .file-date {
 	
 	opacity: 0;
 	z-index: 2;
@@ -266,12 +266,33 @@
 	
 }
 
-.text .file-title {
+.text .file_name {
 	
 	--text-delay: calc(var(--a-current-duration) * 2 / 5 * .97);
 	
+	align-items: center;
+	display: flex;
 	margin-bottom: .2rem;
+	z-index: 3;
 	text-shadow: 0 0 1rem rgba(0,0,0,1), 0 0 3rem rgba(0,0,0,.75), 0 3px 0 rgba(0,0,0,1);
+	
+}
+.text .file-author {
+	
+	border-right: 2px solid rgba(255,255,255,1);
+	font-size: 1.8rem;
+	font-weight: 1000;
+	padding-right: 1rem;
+	margin-right: 1rem;
+	text-shadow: 0 0 1rem rgba(0,0,0,1), 0 0 3rem rgba(0,0,0,.75), 0 2px 0 rgba(0,0,0,1);
+	
+}
+.text .file-title {
+	
+	text-shadow: 0 0 1rem rgba(0,0,0,1), 0 0 3rem rgba(0,0,0,.75), 0 3px 0 rgba(0,0,0,1);
+	
+}
+.text .file-author, .text .file-title {
 	
 }
 .text .file-date {
@@ -346,11 +367,14 @@
 	--timeout-background-color-rgb-to: 240,240,240;
 	--timeout-background-color-from: rgba(var(--timeout-background-color-rgb-from),1);
 	--timeout-background-color-to: rgba(var(--timeout-background-color-rgb-to),1);
+	--timeout-bg-from: linear-gradient(var(--timeout-background-color-from), var(--timeout-background-color-from));
+	--timeout-bg-to: linear-gradient(var(--timeout-background-color-to), var(--timeout-background-color-to));
+	--timeout-bg-blink: linear-gradient(var(--timeout-background-color-from), rgba(var(--timeout-background-color-rgb-from),0) 75%);
 	--timeout-border-color-rgb: 0,0,0;
 	--timeout-border-color: rgba(var(--timeout-border-color-rgb),.8);
 	
 	border-radius: .4rem;
-	background-color: var(--timeout-background-color-from);
+	background: var(--timeout-bg-from);
 	border: 1px solid var(--timeout-border-color);
 	height: var(--timeout-height);
 	margin: var(--timeout-margin);
@@ -383,7 +407,7 @@
 }
 @keyframes timeout {
 	0% {
-		background-color: var(--timeout-background-color-from);
+		background: var(--timeout-bg-from);
 		opacity: 0;
 		transform: var(--timeout-transform-from);
 	}
@@ -391,32 +415,33 @@
 		opacity: 0;
 	}
 	50% {
-		background-color: var(--timeout-background-color-from);
+		background: var(--timeout-bg-from);
 		opacity: 1;
 	}
 	100% {
-		background-color: var(--timeout-background-color-to);
+		background: var(--timeout-bg-to);
 		opacity: 1;
 		transform: var(--timeout-transform-to);
 	}
 }
 @keyframes timeout-blink {
 	0% {
-		background-color: rgba(var(--timeout-background-color-rgb-from),1);
+		background: var(--timeout-bg-from);
 		border-color: rgba(var(--timeout-border-color-rgb),1);
 	}
 	50% {
-		background-color: rgba(var(--timeout-background-color-rgb-from),1);
+		background: var(--timeout-bg-from);
 		border-color: rgba(var(--timeout-border-color-rgb),1);
 	}
 	50.1% {
-		background-color: rgba(var(--timeout-background-color-rgb-from),0);
-		border-color: rgba(var(--timeout-border-color-rgb),0);
+		background: var(--timeout-bg-blink);
+		border-color: rgba(var(--timeout-border-color-rgb),1);
 	}
 	100% {
-		background-color: rgba(var(--timeout-background-color-rgb-from),0);
-		border-color: rgba(var(--timeout-border-color-rgb),0);
+		background: var(--timeout-bg-blink);
+		border-color: rgba(var(--timeout-border-color-rgb),1);
 	}
+	/* steps(2, jump-none) 用のバックアップ*/
 	/*
 	from {
 		background-color: rgba(var(--timeout-background-color-rgb-from),1);
@@ -430,13 +455,13 @@
 }
 @keyframes timeout-end {
 	from {
-		background-color: var(--timeout-background-color-to);
+		background: var(--timeout-bg-to);
 		opacity: 1;
 		transform: var(--timeout-transform-to);
 		transform-origin: var(--timeout-transform-origin-to);
 	}
 	to {
-		background-color: var(--timeout-background-color-from);
+		background: var(--timeout-bg-from);
 		opacity: 0;
 		transform: var(--timeout-transform-from);
 		transform-origin: var(--timeout-transform-origin-to);
@@ -498,4 +523,113 @@
 	font-size: 2.5rem;
 	letter-spacing: -4px;
 	text-shadow: .2rem .2rem 0 rgba(0,0,0,1);
+}
+
+.copy {
+	
+	--ff: serif;
+	--wb: keep-all;
+	
+	--dur: calc(var(--a-current-duration) * .5);
+	--func: ease;
+	--delay: 0;
+	--iterate: infinite;
+	--dir: normal;
+	
+	--t: none;
+	--x: auto;
+	--y: auto;
+	--h: auto;
+	--w: auto;
+	--o: 1;
+	--fw: bold;
+	--fs: 1em;
+	--fl: 1.1;
+	--ts: 0 .1rem 9 rgba(0,0,0,1), 0 0 1rem rgba(0,0,0,1);
+	
+	font: normal normal 1000 2rem/1.1 serif;
+	height: 100%;
+	left: 0;
+	position: absolute;
+	top: 0;
+	width: 100%;
+	writing-mode: var(--writing-mode, vertical-rl);
+	z-index: 3;
+	
+}
+.copy > div, .copy :not(div) > div {
+	
+	--dur: calc(var(--a-current-duration) * 0.05);
+	--func: ease;
+	--delay: calc(var(--a-current-duration) * 1/5);
+	--iterate: 1;
+	--o: 0;
+	--o-to: 1;
+	
+}
+.copy > div > div, .copy :not(div) > div > div {
+	
+	--delay: calc(var(--a-current-duration) * 4/5);
+	--dir: reverse;
+	
+	opacity: var(--o-to);
+	transform: var(--t-to);
+	
+}
+.copy > div > div > p, .copy :not(div) > div > div > p {
+	
+	--o: 1;
+	
+}
+.copy * {
+	
+	align-items: var(--align, center);
+	display: var(--display, flex);
+	flex-direction: var(--direction, column);
+	font: normal normal var(--fw) var(--fs)/var(--fl) var(--ff);
+	justify-content: var(--justify, center);
+	left: var(--x);
+	height: var(--h);
+	opacity: var(--o);
+	position: var(--p, relative);
+	top: var(--y);
+	transform: var(--t);
+	width: var(--w);
+	word-break: var(--wb);
+	writing-mode: var(--writing-mode, vertical-rl);
+	
+	animation: copy-anime var(--dur) var(--func) var(--delay) var(--iterate) var(--dir) forwards running;
+	
+}
+.copy > section {
+	
+	--align: flex-start;
+	
+	justify-content: space-evenly;
+	height: 50%;
+	top: 25%;
+	width: 100%;
+	
+}
+@keyframes copy-anime {
+	from {
+		font: normal normal var(--fw) var(--fs)/var(--fl) var(--ff);
+		left: var(--x);
+		height: var(--h);
+		opacity: var(--o);
+		text-shadow: var(--ts);
+		top: var(--y);
+		transform: var(--t);
+		width: var(--w);
+	}
+	to {
+		font: normal normal var(--fw-to, var(--fw)) var(--fs-to, var(--fs))/var(--fl-to, var(--fl)) var(--ff);
+		left: var(--x-to, var(--x));
+		height: var(--h-to, var(--h));
+		opacity: var(--o-to, var(--o));
+		text-shadow: var(--ts-to, var(--ts));
+		top: var(--y-to, var(--y));
+		transform: var(--t-to, var(--t));
+		width: var(--w-to, var(--w));
+	}
 }

@@ -47,7 +47,14 @@ files: [
 
 "img/sample-0.png",
 { file_path: "img/sample-1.png", file_author: 'SAMPLE' },
-"img/sample-2.png",
+{
+	file_path: "img/sample-2.png",
+	template: {
+		
+		default_author: { tag: 'div', text: 'This is an overrided template. Never affect the other files using the original one though.' }
+		
+	}
+},
 { file_path: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Thuringia_Eisenach_asv2020-07_img23_Wartburg_Castle.jpg/800px-Thuringia_Eisenach_asv2020-07_img23_Wartburg_Castle.jpg", file_author: "«© A.Savin, WikiCommons»" }
 
 ],
@@ -106,10 +113,11 @@ profile: {
 				{
 					end: { timeout: true },
 					attr: { 'class': 'viewport' },
-					children: [ { tag: 'div', attr: { 'class': 'author' }, text: '[[file_author]]' } ]
+					children: [ '{default_author}' ]
 				}
 				
-			]
+			],
+			default_author: { tag: 'div', attr: { 'class': 'author' }, text: '[[file_author]]' }
 			
 		}
 		
@@ -117,6 +125,7 @@ profile: {
 	
 	// 以下のテンプレートは動作確認済みで問題なく使用できると思われるが、
 	// 特定のファイルでのみ表示確認をしており、汎用的な目的での利用には適わない。
+	
 	default: {
 		
 		css: 'css/default.css',
@@ -129,14 +138,21 @@ profile: {
 				attr: { 'class': 'text' },
 				end: { promise: { index: 1, when: 'end' } },
 				children: [
-					{ tag: 'div', attr: { 'class': 'file-title' }, text: '[[file_title]]' },
+					{
+						tag: 'div',
+						attr: { 'class': 'file_name' },
+						children: [
+							{ tag: 'div', attr: { 'class': 'file-author' }, text: '[[file_author]]' },
+							{ tag: 'div', attr: { 'class': 'file-title' }, text: '[[file_title]]' },
+						]
+					},
 					{ tag: 'div', attr: { 'class': 'file-date' }, text: '[[file_date]]' }
 				]
 			},
 			default_simple: [
 				'{default_timeout}',
-				'{title_date}',
 				'{default_notation}',
+				'{title_date}',
 				{
 					end: { event: { animationend: [ { target: true, count: 2, name: 'transition2' } ] } },
 					attr: { 'class': 'viewport' },
@@ -173,8 +189,8 @@ profile: {
 			],
 			default: [
 				'{default_timeout}',
-				'{title_date}',
 				'{default_notation}',
+				'{title_date}',
 				{
 					end: { event: { animationend: [ { target: true, count: 2, name: 'transition2' } ] } },
 					attr: { 'class': 'viewport' },
@@ -208,6 +224,7 @@ profile: {
 			],
 			default_anime: [
 				
+				{ tag: 'div', end: { timeout: true }, attr: { 'class': 'copy' }, html: '[[file_copy]]' },
 				{
 					end: { event: { animationend: [ { target: true, count: 1, name: 'element-preset-anime' } ] } },
 					attr: { 'class': 'scene 0' },
@@ -269,7 +286,7 @@ profile: {
 						'--o-1': 'var(--o-1-2, 1)',
 						'--o-2': 'var(--o-2-2, 1)',
 						'--o-3': 'var(--0-3-2, 1)',
-						'--align-items': 'var(--align-items-2, flex-start)',
+						'--transform-origin': 'var(--transform-origin-2, left top)',
 						'--z-index': 'var(--z-index-2, -1)'
 					}
 				},

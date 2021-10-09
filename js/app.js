@@ -205,8 +205,13 @@ class App {
 				
 				rx = option.rx instanceof RegExp ? option.rx : App.delayedRatePlaceholderRx,
 				replacer = typeof option.replacer === 'function' ? option.replacer : this.createFileReplacer(f, fe),
-				dict = { ...obje(option.replaceDict), i: oi, l: ol };
-		let i,l,i0,l0,k, text, children,child;
+				dict = { ...obje(option.replaceDict), i: oi, l: ol },
+				template =	isObj(f.template) ?
+									isObj(fe.template) ?	{ ...this.cfg.template, ...f.template, ...fe.template } :
+																{ ...this.cfg.template, ...f.template } :
+									isObj(fe.template) ?	{ ...this.cfg.template, ...fe.template } :
+																this.cfg.template;
+		let i,l,i0,l0,k, text,html, children,child;
 		
 		fe.parent = fe.parent || option.parent || true,
 		fe.text && (dict.__key = 'text', text = r(fe.text, rx,dict,replacer))
@@ -214,7 +219,7 @@ class App {
 		if (elm instanceof HTMLElement) {
 			
 			typeof (children = fe.children) === 'string' && App.templateNameRx.test(children) &&
-				(children = App.lazyCopy(this.cfg.template[children.slice(1,-1)])),
+				(children = App.lazyCopy(template[children.slice(1,-1)])),
 			
 			i = -1, l = (children = fe.children = arr(children)).length;
 			while (++i < l) {
@@ -222,7 +227,7 @@ class App {
 				if (typeof (child = children[i]) === 'string') {
 					
 					App.templateNameRx.test(child) && (
-							children.splice(i--,1, ...arr(App.lazyCopy(this.cfg.template[child.slice(1,-1)]))),
+							children.splice(i--,1, ...arr(App.lazyCopy(template[child.slice(1,-1)]))),
 							l = children.length
 						);
 					
@@ -239,6 +244,12 @@ class App {
 			
 			text === undefined || elm.insertAdjacentText
 				(typeof (fe.textTo = fe.textTo || option.textTo) === 'string' ? fe.textTo : 'afterbegin', text),
+			
+			'html' in fe && typeof fe.html === 'string' && (
+				typeof (fe.htmlTo = fe.htmlTo || option.htmlTo || fe.textTo) === 'string' || (fe.htmlTo = 'afterbegin'),
+				dict.__key = 'html',
+				elm.insertAdjacentHTML(fe.htmlTo, fe.html = r(r(fe.html, rx,dict,replacer), rx,dict,replacer))
+			),
 			
 			App.setAttr('attr', elm, fe.attr, rx,dict,replacer),
 			App.setAttr('style', elm, fe.style, rx,dict,replacer);
@@ -271,7 +282,7 @@ class App {
 					
 					(replace = f.delayedReplace.get(fe)) || f.delayedReplace.set(fe, replace = {}),
 					dict.__key in replace || (replace[dict.__key] = {}),
-					replace[dict.__key][dict.__name] = result.input;
+					dict.__name ? (replace[dict.__key][dict.__name] = result.input) : (replace[dict.__key] = result.input);
 					
 					return result[0];
 					
@@ -308,6 +319,7 @@ class App {
 		return () => {
 				
 				const	placeholder = f.delayedReplace.get(fe);
+				let html;
 				
 				if (placeholder) {
 					
@@ -316,8 +328,11 @@ class App {
 					
 					App.setAttr('style', fe.$, placeholder.style, rx,undefined,replacer),
 					App.setAttr('attr', fe.$, placeholder.attr, rx,undefined,replacer);
+					//placeholder.html && (html = App.replace(fe.html, rx,undefined,replacer));
 					
 				}
+				
+				//(html = html || fe.html) && fe.$.insertAdjacentHTML(fe.htmlTo, html),
 				
 				fe.parent && this.getParent(fe,f).appendChild(fe.$);
 				
