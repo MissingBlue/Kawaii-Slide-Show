@@ -65,7 +65,12 @@ defineCustomElements = (...customElementConstructors) => {
 },
 
 get = (obj, ...keys) =>	keys.length ? obj && typeof obj === 'object' && keys[0] in obj ?
-									get(obj[keys[0]], ...(keys.shift(), keys)) : undefined : obj;
+									get(obj[keys[0]], ...(keys.shift(), keys)) : undefined : obj,
+fromJSON = str => {
+	let data;
+	try { data = JSON.parse(str); } catch (error) { console.error(error); }
+	return data;
+};
 
 class ExtensionNode extends HTMLElement {
 	

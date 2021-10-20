@@ -1,3 +1,10 @@
+@import url("reflection.css");
+@import url("meta.css");
+@import url("key.css");
+@import url("copy.css");
+@import url("timeout.css");
+@import url("note.css");
+
 #app {
 	
 	display: flex;
@@ -10,20 +17,21 @@
 	position: relative;
 	
 }
-#screen, #screen > div:only-child {
+#screen, .view-root > div:only-child {
 	
 	display: flex;
 	
 }
-.f1 #screen, .f1 #screen > div:only-child { flex-direction: row }
-.f2 #screen, .f2 #screen > div:only-child { flex-direction: column }
-.f3 #screen, .f3 #screen > div:only-child { flex-direction: row-reverse }
-.f4 #screen, .f4 #screen > div:only-child { flex-direction: row }
-.f5 #screen, .f5 #screen > div:only-child { flex-direction: column }
-.f6 #screen, .f6 #screen > div:only-child { flex-direction: row-reverse }
-.f7 #screen, .f7 #screen > div:only-child { flex-direction: row }
-.f8 #screen, .f8 #screen > div:only-child { flex-direction: column }
-.f9 #screen, .f9 #screen > div:only-child { flex-direction: row-reverse }
+.f1 #screen, .f1 .view-root > div:only-child,
+.f4 #screen, .f4 .view-root > div:only-child,
+.f7 #screen, .f7 .view-root > div:only-child { flex-direction: row }
+.f2 #screen, .f2 .view-root > div:only-child,
+.f5 #screen, .f5 .view-root > div:only-child,
+.f8 #screen, .f8 .view-root > div:only-child { flex-direction: column }
+.f3 #screen, .f3 .view-root > div:only-child,
+.f6 #screen, .f6 .view-root > div:only-child,
+.f9 #screen, .f9 .view-root > div:only-child { flex-direction: row-reverse }
+
 .viewport {
 	
 	--border-color: rgba(216,216,216,1);
@@ -32,19 +40,19 @@
 	
 	--last-h: calc(var(--last-height) * (var(--image-seq-target-raw-rect-height-0) / var(--last-raw-height)) * var(--last-correction));
 	--last-w: calc(var(--last-width) * (var(--image-seq-target-raw-rect-height-0) / var(--last-raw-height)) * var(--last-correction));
-	--h: calc(var(--height) * (var(--image-seq-target-raw-rect-height-0) / var(--raw-height)) * var(--correction));
-	--w: calc(var(--width) * (var(--image-seq-target-raw-rect-height-0) / var(--raw-height)) * var(--correction));
+	--viewport-height: calc(var(--height) * (var(--image-seq-target-raw-rect-height-0) / var(--raw-height)) * var(--correction));
+	--viewport-width: calc(var(--width) * (var(--image-seq-target-raw-rect-height-0) / var(--raw-height)) * var(--correction));
 	
 	align-items: var(--viewport-align-items, flex-start);
 	border-radius: 2rem;
 	box-shadow: 0 0 0rem 1px var(--border-color), 0 0 0rem 2px rgba(80,80,80,1), 0 0 2rem .2rem var(--border-color);
 	display: flex;
-	height: var(--h);
+	height: var(--viewport-height);
 	justify-content: var(--viewport-justify-content, flex-start);
 	overflow: hidden;
 	position: relative;
 	transform: rotate3d(0,0,0, 0deg);
-	width: var(--w);
+	width: var(--viewport-width);
 	
 	--transition-duration: calc(2s / 3);
 	--transition-duration-1: calc(var(--transition-duration) * calc(1 / 3));
@@ -106,206 +114,11 @@
 	/*animation:	transition var(--a-current-duration) ease-out 0s 1 var(--app-anime-default-rule);*/
 	
 }
-/*
-.view::before, .view::after {
-	
-	content: "";
-	display: block;
-	height: 100%;
-	left: 0;
-	position: absolute;
-	top: 0;
-	width: 100%;
-	
-}
-.view::before {
-	
-	animation: white-reflection var(--a-current-duration) ease-in 0s 1 var(--app-anime-default-rule);
-	
-}
-@keyframes white-reflection {
-	
-	0% { background: none; }
-	0.1% {
-		background: var(--bgi-reflect) var(--bgi-reflect-pos-0)/var(--bgi-reflect-size) no-repeat;
-	}
-	20% {
-		background: var(--bgi-reflect) var(--bgi-reflect-pos-1)/var(--bgi-reflect-size) no-repeat;
-	}
-	20.1% { background: none; }
-	100% { background: none; }
-	
-}
-@keyframes white-reflection2 {
-	
-	0% {
-		background: var(--bgi-reflect) var(--bgi-reflect-pos-0)/var(--bgi-reflect-size) no-repeat;
-	}
-	100% {
-		background: var(--bgi-reflect) var(--bgi-reflect-pos-1)/var(--bgi-reflect-size) no-repeat;
-	}
-	
-}
-.view::after {
-	
-	animation: pop-out- var(--a-current-duration) linear 0s 1 var(--app-anime-default-rule);
-	
-}
-@keyframes pop-out {
-	
-	0% { background: radial-gradient(circle at center, rgba(255,255,255,1) 50%, transparent 50.1%) center/500% 500% no-repeat; }
-	5% { background: radial-gradient(circle at center, rgba(255,255,255,1) 50%, transparent 50.1%) center/0px 0px no-repeat; }
-	5.1% { background: none; }
-	95% { background: none; }
-	95.1% { background: radial-gradient(circle at center, rgba(255,255,255,1) 50%, transparent 50.1%) center/0px 0px no-repeat; }
-	100% { background: radial-gradient(circle at center, rgba(255,255,255,1) 50%, transparent 50.1%) center/500% 500% no-repeat; }
-	
-}
-*/
-.reflection {
-	
-	--bgi-reflect-color-0: transparent;
-	--bgi-reflect: linear-gradient(135deg, var(--bgi-reflect-color-0) 20%, rgba(255,255,255,calc(3/4)) 22.5%, rgba(255,255,255,0) 75%, var(--bgi-reflect-color-0));
-	--bgi-reflect-height: 400;
-	--bgi-reflect-size: 100% calc(var(--bgi-reflect-height) * 1%);
-	--bgi-reflect-pos-y: calc(-100 / (var(--bgi-reflect-height) - 100) * 100%);
-	--bgi-reflect-pos-0: 0% var(--bgi-reflect-pos-y);
-	--bgi-reflect-pos-1: 0% calc(var(--bgi-reflect-pos-y) * -1 + 100%);
-	
-	--ref-func: ease;
-	--ref-count: 1;
-	--ref-dir: normal;
-	--ref-fill: forwards;
-	--ref-state: running;
-	
-	height: 100%;
-	left: 0;
-	position: absolute;
-	top: 0;
-	width: 100%;
-	z-index: 2147483647;
-	
-	animation: reflection var(--ref-dur) var(--ref-func) var(--ref-delay) var(--ref-count) var(--ref-dir) var(--ref-fill) var(--ref-state);
-	
-}
-@keyframes reflection {
-	
-	0% {
-		background: var(--bgi-reflect) var(--bgi-reflect-pos-0)/var(--bgi-reflect-size) no-repeat;
-	}
-	100% {
-		background: var(--bgi-reflect) var(--bgi-reflect-pos-1)/var(--bgi-reflect-size) no-repeat;
-	}
-	
-}
 
-.text {
-	
-	--text-delay: calc(var(--a-current-duration) * 2 / 5);
-	--text-dur: calc((var(--a-current-duration) - var(--text-delay)) / 2);
-	--text-move-amount: 1rem;
-	
-	align-items: flex-end;
-	bottom: -1.5rem;
-	display: flex;
-	font: normal normal 1000 3rem/1 "Arial", "メイリオ", sans-serif;
-	letter-spacing: -1px;
-	flex-direction: column;
-	justify-content: flex-end;
-	padding: .5rem;
-	position: absolute;
-	white-space: nowrap;
-	width: 100%;
-	z-index: 3;
-	
-}
-@keyframes spawn-text {
-	0% {
-		opacity: 0;
-	}
-	33% {
-		opacity: 1;
-	}
-	100% {
-		opacity: 1;
-	}
-}
-@keyframes move-text {
-	0% {
-		transform: var(--move-text-transform);
-	}
-	33% {
-		transform: translate(0rem,0rem);
-	}
-	100% {
-		transform: translate(0rem,0rem);
-	}
-}
-.f1 .text { align-items: flex-start; }
-.f2 .text { align-items: center; }
-.f3 .text { align-items: flex-end; }
-.f4 .text { align-items: flex-start; }
-.f5 .text { align-items: center; }
-.f6 .text { align-items: flex-end; }
-.f7 .text { align-items: flex-start; }
-.f8 .text { align-items: center; }
-.f9 .text { align-items: flex-end; }
-/* 擬似クラス関数 :is() は Chromium 88 から */
-.f1 .text, .f4 .text, .f7 .text { --move-text-transform: translate(var(--text-move-amount), 0rem); }
-.f2 .text, .f5 .text, .f8 .text { --move-text-transform: translate(0rem, var(--text-move-amount)); }
-.f3 .text, .f6 .text, .f9 .text { --move-text-transform: translate(calc(var(--text-move-amount) * -1), 0rem); }
-
-
-.text .file_name, .text .file-date {
-	
-	opacity: 0;
-	z-index: 2;
-	
-	animation:	spawn-text var(--text-dur) ease var(--text-delay) 2 alternate forwards running,
-					move-text var(--text-dur) ease var(--text-delay) 2 alternate forwards running;
-	
-}
-
-.text .file_name {
-	
-	--text-delay: calc(var(--a-current-duration) * 2 / 5 * .97);
-	
-	align-items: center;
-	display: flex;
-	margin-bottom: .2rem;
-	z-index: 3;
-	text-shadow: 0 0 1rem rgba(0,0,0,1), 0 0 3rem rgba(0,0,0,.75), 0 3px 0 rgba(0,0,0,1);
-	
-}
-.text .file-author {
-	
-	border-right: 2px solid rgba(255,255,255,1);
-	font-size: 1.8rem;
-	font-weight: 1000;
-	padding-right: 1rem;
-	margin-right: 1rem;
-	text-shadow: 0 0 1rem rgba(0,0,0,1), 0 0 3rem rgba(0,0,0,.75), 0 2px 0 rgba(0,0,0,1);
-	
-}
-.text .file-title {
-	
-	text-shadow: 0 0 1rem rgba(0,0,0,1), 0 0 3rem rgba(0,0,0,.75), 0 3px 0 rgba(0,0,0,1);
-	
-}
-.text .file-author, .text .file-title {
-	
-}
-.text .file-date {
-	
-	font-size: 2.1rem;
-	text-shadow: 0 0 1rem rgba(0,0,0,1), 0 0 3rem rgba(0,0,0,.75), 0 2px 0 rgba(0,0,0,1);
-	
-}
 
 .scene {
 	
 	background:	var(--bgi) var(--bg-pos-flex)/contain no-repeat var(--bgc, transparent);
-	will-change: contents;
 	
 	position: absolute;
 	
@@ -350,181 +163,19 @@
 	}
 	
 }
-
-.timeout {
+.clip:not(.default) {
 	
-	--timeout-a-dur-max: .95;
-	--timeout-a-dur: calc(var(--a-current-duration) * var(--timeout-a-dur-max));
-	--timeout-blink-count: 3;
-	/* 以下の変数の値は .02 が好ましいが firefox と chrome では異なり、chrome では想定しない長さになるため chrome に合わせている */
-	--timeout-blink-dur-length: .015;
-	--timeout-blink-dur: calc(var(--timeout-a-dur) * var(--timeout-blink-dur-length));
-	--timeout-margin-value: .6rem;
-	--timeout-transform-to: scale(1,1);
-	--timeout-length-to: 100%;
-	--timeout-size: .5rem;
-	--timeout-background-color-rgb-from: 200,200,200;
-	--timeout-background-color-rgb-to: 240,240,240;
-	--timeout-background-color-from: rgba(var(--timeout-background-color-rgb-from),1);
-	--timeout-background-color-to: rgba(var(--timeout-background-color-rgb-to),1);
-	--timeout-bg-from: linear-gradient(var(--timeout-background-color-from), var(--timeout-background-color-from));
-	--timeout-bg-to: linear-gradient(var(--timeout-background-color-to), var(--timeout-background-color-to));
-	--timeout-bg-blink: linear-gradient(var(--timeout-background-color-from), rgba(var(--timeout-background-color-rgb-from),0) 75%);
-	--timeout-border-color-rgb: 0,0,0;
-	--timeout-border-color: rgba(var(--timeout-border-color-rgb),.8);
+	--in-clip: var(--in-kf, clip) var(--in-dur, 0) var(--in-func, ease) var(--in-delay, 0) var(--in-count, 1) var(--in-direction, normal) var(--in-fill, forwards) running;
+	--clip: var(--kf, clip) var(--dur, var(--a-current-duration, var(--a-duration))) var(--func, ease) var(--delay, 0) var(--count, 1) var(--direction, normal) var(--fill, forwards) running;
+	--out-clip: var(--in-kf, clip) var(--out-dur, 0) var(--func, ease) var(--out-delay, 0) var(--count, 1) var(--out-direction, normal) var(--fill, forwards) running;
+	--clip-animation: var(--in-clip), var(--clip), var(--out-clip);
 	
-	border-radius: .4rem;
-	background: var(--timeout-bg-from);
-	border: 1px solid var(--timeout-border-color);
-	height: var(--timeout-height);
-	margin: var(--timeout-margin);
-	transform: var(--timeout-transform-from);
-	transform-origin: var(--timeout-transform-origin-from);
-	width: var(--timeout-width);
+	animation: var(--clip-animation);
 	
-	animation:	timeout var(--timeout-a-dur) ease-out 0s 1 normal forwards running,
-					/* 以下の animation-timing-function は steps(2,jump-none) を指定すべきだが、固定値 jump は chrome 77 未満では非対応 */
-					timeout-blink var(--timeout-blink-dur) linear calc(var(--timeout-a-dur) - var(--timeout-blink-dur) * var(--timeout-blink-count)) var(--timeout-blink-count) normal backwards running,
-					timeout-end calc(var(--a-current-duration) - var(--timeout-a-dur)) ease-in var(--timeout-a-dur) 1 normal forwards running;
-	
-}
-.f1 .timeout, .f4 .timeout, .f7 .timeout { --timeout-margin: 0 var(--timeout-margin-value) 0 0; }
-.f2 .timeout, .f5 .timeout, .f8 .timeout { --timeout-margin: 0 0 var(--timeout-margin-value) 0; }
-.f3 .timeout, .f6 .timeout, .f9 .timeout { --timeout-margin: 0 0 0 var(--timeout-margin-value); }
-.f1 .timeout, .f3 .timeout, .f4 .timeout, .f6 .timeout, .f7 .timeout, .f9 .timeout {
-	--timeout-transform-from: scale(1,0);
-	--timeout-transform-origin-from: bottom;
-	--timeout-transform-origin-to: top;
-	--timeout-height: var(--timeout-length);
-	--timeout-width: var(--timeout-size);
-}
-.f2 .timeout, .f5 .timeout, .f8 .timeout {
-	--timeout-transform-from: scale(0,1);
-	--timeout-transform-origin-from: left;
-	--timeout-transform-origin-to: right;
-	--timeout-height: var(--timeout-size);
-	--timeout-width: var(--timeout-length);
-}
-@keyframes timeout {
-	0% {
-		background: var(--timeout-bg-from);
-		opacity: 0;
-		transform: var(--timeout-transform-from);
-	}
-	15% {
-		opacity: 0;
-	}
-	50% {
-		background: var(--timeout-bg-from);
-		opacity: 1;
-	}
-	100% {
-		background: var(--timeout-bg-to);
-		opacity: 1;
-		transform: var(--timeout-transform-to);
-	}
-}
-@keyframes timeout-blink {
-	0% {
-		background: var(--timeout-bg-from);
-		border-color: rgba(var(--timeout-border-color-rgb),1);
-	}
-	50% {
-		background: var(--timeout-bg-from);
-		border-color: rgba(var(--timeout-border-color-rgb),1);
-	}
-	50.1% {
-		background: var(--timeout-bg-blink);
-		border-color: rgba(var(--timeout-border-color-rgb),1);
-	}
-	100% {
-		background: var(--timeout-bg-blink);
-		border-color: rgba(var(--timeout-border-color-rgb),1);
-	}
-	/* steps(2, jump-none) 用のバックアップ*/
-	/*
-	from {
-		background-color: rgba(var(--timeout-background-color-rgb-from),1);
-		border-color: rgba(var(--timeout-border-color-rgb),1);
-	}
-	to {
-		background-color: rgba(var(--timeout-background-color-rgb-from),0);
-		border-color: rgba(var(--timeout-border-color-rgb),0);
-	}
-	*/
-}
-@keyframes timeout-end {
-	from {
-		background: var(--timeout-bg-to);
-		opacity: 1;
-		transform: var(--timeout-transform-to);
-		transform-origin: var(--timeout-transform-origin-to);
-	}
-	to {
-		background: var(--timeout-bg-from);
-		opacity: 0;
-		transform: var(--timeout-transform-from);
-		transform-origin: var(--timeout-transform-origin-to);
-	}
 }
 
-[data-note] .note {
-	
-	--bg-color-0: rgba(255,120,120,1);
-	--bg-color-1: rgba(255,255,255,0);
-	--size: 4.5rem;
-	--delay: calc(var(--a-current-duration) * 1 / 10);
-	
-	align-items: center;
-	background: linear-gradient(var(--bg-color-0),var(--bg-color-1) 100%);
-	border-radius: 100%;
-	display: flex;
-	height: var(--size);
-	justify-content: center;
-	left: var(--note-left);
-	position: absolute;
-	right: var(--note-right);
-	top: 0;
-	transform: var(--note-transform-from);
-	visibility: visible;
-	width: var(--size);
-	will-change: contents;
-	z-index: 1;
-	
-	animation: note calc((var(--a-current-duration) - var(--delay)) / 2) ease var(--delay) 2 alternate forwards running;
-	
-}
-.f2 .note, .f3 .note, .f5 .note, .f6 .note, .f8 .note, .f9 .note {
-	--note-left: 0;
-	--note-right: unset;
-	--note-transform-from: translate(-25%,-25%) rotate(0deg) scale(0,0);
-	--note-transform-to: translate(-25%,-25%) rotate(-10deg) scale(1,1);
-}
-.f1 .note, .f4 .note, .f7 .note {
-	--note-left: unset;
-	--note-right: 0;
-	--note-transform-from: translate(25%,-25%) rotate(0deg) scale(0,0);
-	--note-transform-to: translate(25%,-25%) rotate(-10deg) scale(1,1);
-}
-@keyframes note {
-	0% {
-		transform: var(--note-transform-from);
-	}
-	5% {
-		transform: var(--note-transform-to);
-	}
-	100% {
-		transform: var(--note-transform-to);
-	}
-}
-[data-note~="latest"] .note::before {
-	content: "NEW";
-	font-family: "Arial Black";
-	font-size: 2.5rem;
-	letter-spacing: -4px;
-	text-shadow: .2rem .2rem 0 rgba(0,0,0,1);
-}
 
+/*
 .copy {
 	
 	--ff: serif;
@@ -633,3 +284,4 @@
 		width: var(--w-to, var(--w));
 	}
 }
+*/

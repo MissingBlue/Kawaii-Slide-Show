@@ -1,0 +1,36 @@
+.reflection {
+	
+	--bgi-reflect-color-0: transparent;
+	--bgi-reflect: linear-gradient(135deg, var(--bgi-reflect-color-0) 20%, rgba(255,255,255,calc(3/4)) 22.5%, rgba(255,255,255,0) 75%, var(--bgi-reflect-color-0));
+	--bgi-reflect-height: 400;
+	--bgi-reflect-size: 100% calc(var(--bgi-reflect-height) * 1%);
+	--bgi-reflect-pos-y: calc(-100 / (var(--bgi-reflect-height) - 100) * 100%);
+	--bgi-reflect-pos-0: 0% var(--bgi-reflect-pos-y);
+	--bgi-reflect-pos-1: 0% calc(var(--bgi-reflect-pos-y) * -1 + 100%);
+	
+	--ref-func: ease;
+	--ref-count: 1;
+	--ref-dir: normal;
+	--ref-fill: forwards;
+	--ref-state: running;
+	
+	height: 100%;
+	left: 0;
+	position: absolute;
+	top: 0;
+	width: 100%;
+	z-index: 2147483647;
+	
+	animation: reflection var(--ref-dur) var(--ref-func) var(--ref-delay) var(--ref-count) var(--ref-dir) var(--ref-fill) var(--ref-state);
+	
+}
+@keyframes reflection {
+	
+	0% {
+		background: var(--bgi-reflect) var(--bgi-reflect-pos-0)/var(--bgi-reflect-size) no-repeat;
+	}
+	100% {
+		background: var(--bgi-reflect) var(--bgi-reflect-pos-1)/var(--bgi-reflect-size) no-repeat;
+	}
+	
+}

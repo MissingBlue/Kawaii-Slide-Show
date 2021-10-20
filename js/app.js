@@ -1,5 +1,6 @@
 //todo	cond に自身の終了時に他の任意の cond を開始するプロパティ then の設定（親から子へ行う動作を兄弟間などでも行なえるようにする）
 //			elements への <audio> ではない音声ファイルの指定。
+//issues	iOS で動かない: static の対応が iOS 14.5 からであるのが今のところ確認できている理由。
 class App {
 	
 	constructor (cfg) {
@@ -103,9 +104,9 @@ class App {
 				f.delayedReplace = new Map(), f.serial = [],
 				f.assets = [ ...arr(f.assets || this.cfg.assets) ],
 				
-				typeof f.elements === 'string' && (f.elements = App.lazyCopy(tmp[f.elements])),
-				(!f.elements || typeof f.elements !== 'object') && (f.elements = App.lazyCopy(tmp.default)),
-				(f.elements = arr(f.elements)).length || (f.elements = arr(App.lazyCopy(tmp.default)))
+				typeof f.elements === 'string' && (f.elements = App.fastCopy(tmp[f.elements])),
+				(!f.elements || typeof f.elements !== 'object') && (f.elements = App.fastCopy(tmp.default)),
+				(f.elements = arr(f.elements)).length || (f.elements = arr(App.fastCopy(tmp.default)))
 				
 			);
 		
@@ -181,59 +182,61 @@ class App {
 												};
 		
 	}
+	getTemplate(name, template = this.cfg.template, replacer) {
+		
+		let i,l;
+		
+		if (name && typeof name === 'string' && App.templateNameRx.test(typeof replacer === 'function' ? (name = replacer(name)) : name) && (l = (name = name.slice(1,-1).split('?')).length)) {
+			
+			i = -1;
+			while (++i < l) if (name[i] in template) return App.fastCopy(template[name[i]]);
+			
+		}
+		
+	}
 	createElements(fe, f, option) {
 		
+		const	r = str => App.replace(str, rx,dict,replacer),
+				oi = (option = obje(option)).i,
+				ol = option.l,
+				rx = option.rx instanceof RegExp ? option.rx : App.delayedRatePlaceholderRx,
+				dict = { ...obje(option.replaceDict), i: oi, l: ol },
+				replacer = typeof option.replacer === 'function' ? option.replacer : this.createFileReplacer(f, fe);
+		
 		if (
-			!(
-				fe = typeof fe === 'string' ?
-					App.templateNameRx.test(fe) ? App.lazyCopy(this.cfg.template[fe.slice(1,-1)]) : { tag: fe } : fe
-			) ||
+			!(fe = typeof fe === 'string' ? this.getTemplate(fe, undefined, r) || { tag: fe } : fe) ||
 			typeof fe !== 'object'
 		) return;
 		
 		fe.beginCond instanceof Condition && fe.beginCond.clear(true),
 		fe.endCond instanceof Condition && fe.endCond.clear(true),
-		fe.$ instanceof Node && fe.$.remoce();
+		fe.$ instanceof Node && fe.$.remove();
 		
 		const elm =	fe.$ = fe.tag || !('text' in fe) ?
 							document.createElement(fe.tag || 'div') : document.createTextNode(''),
-				
-				r = App.replace,
-				
-				oi = (option = obje(option)).i,
-				ol = option.l,
-				
-				rx = option.rx instanceof RegExp ? option.rx : App.delayedRatePlaceholderRx,
-				replacer = typeof option.replacer === 'function' ? option.replacer : this.createFileReplacer(f, fe),
-				dict = { ...obje(option.replaceDict), i: oi, l: ol },
+				attrReplacer = match => {let a = (f.dur - (Date.now() - f.time) / 1000) * parseFloat(match[2]);/*hi(f.dur,(Date.now() - f.time) / 1000,a,match[2],fe);*/return a;},
 				template =	isObj(f.template) ?
 									isObj(fe.template) ?	{ ...this.cfg.template, ...f.template, ...fe.template } :
 																{ ...this.cfg.template, ...f.template } :
 									isObj(fe.template) ?	{ ...this.cfg.template, ...fe.template } :
 																this.cfg.template;
-		let i,l,i0,l0,k, text,html, children,child;
+		let i,l,i0,l0,k,k0, text,html, children,child, placeholder,attr,attr0;
 		
 		fe.parent = fe.parent || option.parent || true,
-		fe.text && (dict.__key = 'text', text = r(fe.text, rx,dict,replacer))
+		fe.text && (dict.__key = 'text', text = r(fe.text))
 		
 		if (elm instanceof HTMLElement) {
 			
-			typeof (children = fe.children) === 'string' && App.templateNameRx.test(children) &&
-				(children = App.lazyCopy(template[children.slice(1,-1)])),
-			
-			i = -1, l = (children = fe.children = arr(children)).length;
+			i = -1, l = (children = fe.children = arr(this.getTemplate(fe.children, template, r) || fe.children)).length;
 			while (++i < l) {
 				
-				if (typeof (child = children[i]) === 'string') {
+				if (child = this.getTemplate(children[i], template, r)) {
 					
-					App.templateNameRx.test(child) && (
-							children.splice(i--,1, ...arr(App.lazyCopy(template[child.slice(1,-1)]))),
-							l = children.length
-						);
+					children.splice(i--,1, ...arr(child)), l = children.length;
 					
 					continue;
 					
-				} else if (child && typeof child === 'object') continue;
+				} else if ((child = children[i]) && typeof child === 'object') continue;
 				
 				children.splice(i--, 1), --l;
 				
@@ -248,23 +251,43 @@ class App {
 			'html' in fe && typeof fe.html === 'string' && (
 				typeof (fe.htmlTo = fe.htmlTo || option.htmlTo || fe.textTo) === 'string' || (fe.htmlTo = 'afterbegin'),
 				dict.__key = 'html',
-				elm.insertAdjacentHTML(fe.htmlTo, fe.html = r(r(fe.html, rx,dict,replacer), rx,dict,replacer))
+				elm.insertAdjacentHTML(fe.htmlTo, fe.html = r(r(fe.html)))
 			),
 			
-			App.setAttr('attr', elm, fe.attr, rx,dict,replacer),
-			App.setAttr('style', elm, fe.style, rx,dict,replacer);
+			fe._attr = App.setAttr('attr', elm, fe.attr, rx,dict,replacer),
+			fe._style = App.setAttr('style', elm, fe.style, rx,dict,replacer);
 			
 		} else if (text !== undefined) elm.textContent = text;
 		
+		fe.begin && typeof fe.begin.timeout === 'string' &&
+			(dict.__key = 'beginTimeout', fe.begin.timeout = r(fe.begin.timeout)),
 		(fe.beginCond || (fe.beginCond = new Condition())).set(fe.begin, true),
 		fe.beginCond.standby(f.dur, fe.$),
-		fe.xBegin = this.createElementBeginning(fe, f),
 		fe.pendingBegin = !fe.begin || !!fe.begin.promise,
 		
+		fe.end && typeof fe.end.timeout === 'string' &&
+			(dict.__key = 'endTimeout', fe.end.timeout = r(fe.end.timeout)),
 		(fe.endCond || (fe.endCond = new Condition())).set(fe.end, true),
 		fe.endCond.standby(f.dur, fe.$),
-		fe.xEnd = this.createElementEnd(fe, f),
 		fe.pendingEnd = !fe.end || !!fe.end.promise;
+		
+		if (placeholder = f.delayedReplace.get(fe)) {
+			
+			fe.attrRx = App.delayedRatePlaceholderRx,
+			fe.attrReplacer = attrReplacer;
+			for (k in placeholder) {
+				switch (k) {
+					case 'attr': case 'style':
+					attr = fe['$' + k] = {}, attr0 = fe['_' + k];
+					for (k0 in placeholder[k]) attr[k0] = attr0[k0];
+					break;
+					case 'beginTimeout': case 'endTimeout': fe[k] = placeholder[k];
+				}
+			}
+			
+		}
+		
+		//fe.traces && fe.$.addEventListener('animationstart', e => (hi(getComputedStyle(fe.$).getPropertyValue('--delay-out'), Date.now() - f.time),fe.traceTimer = setInterval(()=>hi(Date.now() - f.time), 33)), { once: true });
 		
 		return f.serial[f.serial.length] = fe;
 		
@@ -273,7 +296,7 @@ class App {
 		
 		return (result, dict, rx) => {
 				
-				let i,l, v,values, replace;
+				let i,l, v,values, replace,defaultValue;
 				
 				if (typeof result[1] === 'string') {
 					// !number!
@@ -281,8 +304,8 @@ class App {
 					// ! で囲まれた数値の値を、element が属するファイルの現在の残り表示時間に乗算し、その値で置き換える。
 					
 					(replace = f.delayedReplace.get(fe)) || f.delayedReplace.set(fe, replace = {}),
-					dict.__key in replace || (replace[dict.__key] = {}),
-					dict.__name ? (replace[dict.__key][dict.__name] = result.input) : (replace[dict.__key] = result.input);
+					!(dict.__key in replace) && dict.__name && (replace[dict.__key] =  {}),
+					(dict.__name ? replace[dict.__key] : replace)[dict.__name || dict.__key] = result.input;
 					
 					return result[0];
 					
@@ -299,15 +322,19 @@ class App {
 					// 該当するプロパティがファイルオブジェクトに存在しない場合はコンフィグオブジェクトのプロパティが用いられ、それも存在しない場合は空文字列で置換する。
 					// 文字列を . で区切るとネストしたプロパティにアクセスできる。
 					// , で区切ると、コンマ以前のプロパティが存在しない場合の代替プロパティを任意の数指定できる。
-					// 逆に言えばファイルオブジェクト、コンフィグオブジェクトのプロパティ名に . , は使えない。
+					// : で区切ると、指定したプロパティがすべて存在しない場合の既定値として使われる。
+					// : は任意の位置で任意の数指定できるが、より後方のものがひとつだけ採用される。
+					// 逆に言えばファイルオブジェクト、コンフィグオブジェクトのプロパティ名に . , : は使えない。
 					
 					i = -1, l = (values = result[6].split(',')).length;
 					while (++i < l)	if (
-												(v = get(f, ...(replace = values[i].split('.')))) !== undefined ||
-												(v = get(this.cfg, ...replace)) !== undefined
+												(v = values[i].split(':'), v[1] && (defaultValue = v[1]), v = v[0] || undefined) && (
+													(v = get(f, ...(replace = v.split('.')))) !== undefined ||
+													(v = get(this.cfg, ...replace)) !== undefined
+												)
 											) break;
 					
-					return v === undefined ? '' : v;
+					return v === undefined ? defaultValue === undefined ? '' : defaultValue : v;
 					
 				}
 				
@@ -316,27 +343,39 @@ class App {
 	}
 	createElementBeginning(fe, f) {
 		
-		return () => {
+		return fe.begins = new Promise((rs,rj) => fe.beginCond.executed.then(() => {
 				
-				const	placeholder = f.delayedReplace.get(fe);
+				//const setAttr = () =>
 				let html;
 				
-				if (placeholder) {
-					
-					const	rx = App.delayedRatePlaceholderRx,
-							replacer = match => (f.dur - (Date.now() - f.time) / 1000) * parseFloat(match[2]);
-					
-					App.setAttr('style', fe.$, placeholder.style, rx,undefined,replacer),
-					App.setAttr('attr', fe.$, placeholder.attr, rx,undefined,replacer);
-					//placeholder.html && (html = App.replace(fe.html, rx,undefined,replacer));
-					
-				}
+				typeof fe.beginTimeout === 'string' &&
+					fe.beginCond.interruptTimeout(App.replace(fe.beginTimeout, fe.attrRx,undefined,fe.attrReplacer)),
+				typeof fe.endTimeout === 'string' &&
+					fe.endCond.interruptTimeout(App.replace(fe.endTimeout, fe.attrRx,undefined,fe.attrReplacer)),
 				
 				//(html = html || fe.html) && fe.$.insertAdjacentHTML(fe.htmlTo, html),
 				
-				fe.parent && this.getParent(fe,f).appendChild(fe.$);
+				fe.attrRx && !fe.$.dataset.shareCssP && (
+					fe.$attr && App.setAttr('attr', fe.$, fe.$attr, fe.attrRx,undefined,fe.attrReplacer),
+					fe.$style && App.setAttr('style', fe.$, fe.$style, fe.attrRx,undefined,fe.attrReplacer)
+					//placeholder.html && (html = App.replace(fe.html, rx,undefined,replacer));
+				),
 				
-			};
+				fe.parent && this.getParent(fe,f).appendChild(fe.$),
+				
+				// 以下の処理は直上の同じ処理と重複している。
+				// 要素に element.closest を使う処理を含む場合を考慮し、含む場合のみ DOM ツリーへの追加後に行なうようにしているが、
+				// 抜本的な解決策ではないため、代替策の検討が必要。
+				fe.attrRx && fe.$.dataset.shareCssP && (
+					fe.$attr && App.setAttr('attr', fe.$, fe.$attr, fe.attrRx,undefined,fe.attrReplacer),
+					fe.$style && App.setAttr('style', fe.$, fe.$style, fe.attrRx,undefined,fe.attrReplacer)
+					//placeholder.html && (html = App.replace(fe.html, rx,undefined,replacer));
+				),
+				
+				rs();
+				//fe.atime || hi((fe.atime = Date.now()) - f.time,fe);
+				//hi(f.time - (fe.time = Date.now()),fe);
+			}));
 		
 	}
 	/*
@@ -346,22 +385,24 @@ class App {
 	*/
 	createElementEnd(fe, f) {
 		
-		return () => {
-			
-			// fe.end の値が true の時、
-			// 自身ののすべての子要素（再帰を含む）の endCond.excuted が解決された時に、自身の endCond を解決する。
-			
-			if (fe.end === true) {
+		return fe.ends = new Promise((rs,rj) => fe.endCond.executed.then(() => {
 				
-				const end = () => ++i0 >= ends.length && this.resolveAll(fe), ends = App.fetchRecursive(fe, 'endCond');
+				// fe.end の値が true の時、
+				// 自身ののすべての子要素（再帰を含む）の endCond.excuted が解決された時に、自身の endCond を解決する。
+				
+				const resolve = () => (!i || ++i0 >= i) && (this.resolveAll(fe), rs()/*, (fe.traces && clearInterval(fe.traceTimer), fe.loops = (fe.loops || (fe.loops = 0)) + 1) < 2 && hi(Date.now()- f.time,Date.now()- fe.time,fe.$,fe.time,Date.now()))*/);
 				let i,i0;
 				
-				i = -1, i0 = 0;
-				while (ends[++i]) ends[i].executed.then(end);
+				if (fe.end === true) {
+					
+					const	ends = App.fetchRecursive(fe, 'endCond');
+					
+					i = -1, i0 = 0;
+					while (ends[++i]) ends[i].executed.then(resolve);
+					
+				} else fe.beginCond.executed ? fe.beginCond.executed.then(resolve) : resolve();
 				
-			} else (fe.beginCond.executed || Promise.resolve()).then(() => this.resolveAll(fe));
-			
-		}
+			}));
 		
 	}
 	resolveAll(fe, when = true) {
@@ -374,7 +415,7 @@ class App {
 			let i;
 			
 			i = -1;
-			while (children[++i]) this.resolveAll(children[i], when);
+			while (++i < l) this.resolveAll(children[i], when);
 			
 		}
 		
@@ -398,7 +439,8 @@ class App {
 		let i,fe;
 		
 		i = -1;
-		while (fe = f.serial[++i]) fe.$ && (fe.beginCond.reset(), fe.endCond.reset(), fe.$.remove());
+		while (fe = f.serial[++i])
+			fe.$ && (delete fe.begins, delete fe.ends, fe.beginCond.reset(), fe.endCond.reset(), fe.$.remove());
 		
 		this.transit(fs[li === fs.length ? 0 : li], f);
 		
@@ -407,7 +449,8 @@ class App {
 		
 		const	fes = f.elements,
 				fl = f.serial.length,
-				finished = () => ++ei === fl && this.transited(f, lf);
+				finished = () => ++ei === fl && this.transited(f, lf),
+				exec = App.createExecution;
 		let i,l,i0,l0, ei, aid,rid,ex, p,fe,xFe,sib,fel;
 		
 		// リソースの設定
@@ -456,13 +499,6 @@ class App {
 		
 		this.html.style.setProperty('--a-current-duration', f.dur + 's'),
 		
-		//this.textNode.classList.remove('text'),
-		//f.text_a ? (this.textNode.dataset.textA = f.text_a) : delete this.textNode.dataset.textA,
-		//f.text_b ? (this.textNode.dataset.textB = f.text_b) : delete this.textNode.dataset.textB,
-		//// https://css-tricks.com/restart-css-animation/#update-another-javascript-method-to-restart-a-css-animation
-		//void this.textNode.offsetWidth,
-		//this.textNode.classList.add('text'),
-		
 		this.appNode.dataset.current = typeof f.id === 'string' ? f.id : '',
 		this.appNode.dataset.currentLabel =
 			typeof f.labels === 'string' ? f.labels : Array.isArray(f.labels) ? f.labels.join(' ') : '',
@@ -470,12 +506,12 @@ class App {
 		
 		App.setCSSV(this.body, f.ccv),
 		
-		f.time = Date.now(),
-		
 		i = -1, ei = 0;
 		while (fe = f.serial[++i])
-			fe.beginCond.execute(null, fe.nested || isObj(fe.begin) ? fe.pendingBegin : false).then(fe.xBegin),
-			fe.endCond.execute(null, fe.nested || isObj(fe.end) ? fe.pendingEnd : false).then(fe.xEnd).then(finished);
+			fe.beginCond.execute(null, fe.nested || isObj(fe.begin) ? fe.pendingBegin : false).
+				then(this.createElementBeginning(fe,f)),
+			fe.endCond.execute(null, fe.nested || isObj(fe.end) ? fe.pendingEnd : false).
+				then(this.createElementEnd(fe,f)).then(finished);
 		
 		i = -1;
 		while (fe = f.serial[++i]) {
@@ -489,17 +525,15 @@ class App {
 					(xFe = 'index' in p ? sib[int(sib.indexOf(fe) + int(p.index, -1,-Infinity), 0, 0, fel - 1)] : null)
 				) {
 					
-					xFe[`${p.when === 'begin' || p.when === 'end' ? p.when : 'begin'}Cond`].executed.
-						then(App.createExecution(fe, 'begin'));
+					xFe[(p.when === 'begin' || p.when === 'end' ? p.when : 'begin') + 's'].
+						then(exec(fe.beginCond, fe.beginCond.executed));
 					
 				}
 				
 			}
 			
-			xFe || !fe.beginCond.passive ? (xFe = null) : (
-					fe.nested ?	fe.nested.beginCond.executed.then(App.createExecution(fe, 'begin')) :
-									fe.beginCond.resolve()
-				);
+			xFe || !fe.beginCond.passive ? (xFe = null) :
+				(fe.nested ? fe.nested.begins.then(exec(fe.beginCond, fe.beginCond.executed)) : fe.beginCond.resolve());
 			
 			if (fe.end) {
 				
@@ -508,20 +542,42 @@ class App {
 					(xFe = 'index' in p ? sib[int(sib.indexOf(fe) + int(p.index, -1,-Infinity), 0, 0, fel - 1)] : null)
 				) {
 					
-					xFe[`${p.when === 'begin' || p.when === 'end' ? p.when : 'end'}Cond`].executed.
-						then(App.createExecution(fe, 'end'));
+					xFe[(p.when === 'begin' || p.when === 'end' ? p.when : 'begin') + 's'].
+						then(exec(fe.endCond, fe.endCond.executed));
 					
 				}
 				
 			}
 			
-			xFe || !fe.endCond.passive ? (xFe = null) : (
-					fe.nested ?	fe.nested.endCond.executed.then(App.createExecution(fe, 'end')) :
-									fe.endCond.resolve()
-				);
-			
+			xFe || !fe.endCond.passive ? (xFe = null) : 
+				(fe.nested ? fe.nested.ends.then(exec(fe.endCond, fe.endCond.executed)) : fe.endCond.resolve());
 		
 		}
+		
+		// この setTimeout は Firefox で生じる、大量の CSS 再計算がすべてのスレッドを停止させる問題に対応するための便宜的な対応。
+		// この関数内で、スライドショーに表示させる画像の切り替えを行なっているが、設定に依存するが、
+		// 切り換え直後は大量の要素の入れ替えが行われることが想定される。
+		// それに伴い要素の追加毎に随時 CSS の再計算が行なわれることが考えられるが、
+		// Firefox はそのために setTimeout などの非同期処理を含むページ内のスレッド（恐らくは）全体を止めてしまう。
+		// これにより、JavaScript と CSS との間に時間的な不整合が生じる。
+		// これは、通常問題に現れにくいが、この処理では JavaScript 側で画像の切り替え開始時間を記録し、
+		// それを基に CSS 変数に、現在の画像の再生時間を間接的に CSS 側に伝えるため、
+		// 例えば CSS 再計算に 500ms かかった場合、CSS の animation が再生開始するのは、切り換え後 +500ms だが、
+		// JavaScript 側で記録している切り換え開始時間はそれよりも -500ms になるため、現在の表示経過時間が常に -500ms になる。
+		// これだけなら、animation の開始を addEventListener で捕捉してそれを開始時間とすればいいが、
+		// この処理は animation の使用は任意であるため、それに依存して時間を決めることは現実的ではない。
+		// 様々な解決策が考えられるかもしれないが、Firefox の仕様の変更や chromium 系ブラウザーへの影響を最小限に留めるため、
+		// 現段階では Firefox が setTimeout をも止めることを逆手に取り、実行時間を 0 秒にした無意味な setTimeout を実行して、
+		// CSS の再計算とともにすべてのスレッドが再稼動した時点を画像の表示開始開始時間として記録するコールバック関数を実行している。
+		// これは上記の仕様の Firefox 以外にとっては完全に無意味な処理であるため、仮に Firefox が仕様を改めたら修正すべきである。
+		// また現状、Firefox が無差別的にスレッドを停止させるためにこの解決策で問題が解消されるが、
+		// 選択的にスレッドを停止するようなさらに半端な仕様に変更された場合、再び問題が表面化する可能性がある。
+		// そのため、画像の表示時間が意図しない長さになった場合、この setTimeout のコール版数の中身を直接実行するように変更するなどして確認することを推奨する。
+		// なお、この setTimeout のコールバック関数が実行する処理そのものは、この処理全体において必要欠くべからざる処理である。
+		setTimeout(() => f.time = Date.now(), 0);
+		
+		
+		//this.timer || (this.timerDate = Date.now(), hi(Date.now() - this.timerDate), this.timer = setTimeout(()=>hi(Date.now() - this.timerDate),16));
 		
 	}
 	
@@ -552,9 +608,20 @@ class App {
 	get totalDur() { return this.dur * this.files.length; }
 	set totalDur(v) { this.dur = v / this.files.length; }
 	
-	static createExecution(fe, when) {
+	static createExecution(cond, executed) {
 		
-		return () => fe[when + 'Cond'].resolve();
+		// 以下の executed の比較は非常にピーキーな（しかしテスト時などはままある）状況下でのみ有効になる。
+		// ファイルがひとつだけで、かつそのファイルの要素内に end の条件が設定されてないものがあり、
+		// その要素の親要素の解決条件が、ファイルの表示終了相当だった場合、表示終了時点では実際にすべての要素の開始、終了条件は解決されることになるが、
+		// この関数が返す以下のアロー関数は、要素の条件の解決後に then を通じて非同期で実行されるため、
+		// それが単一のファイルかつその表示終了を条件とする要素の解決に紐付けられていた場合、
+		// 実行が同一ファイルの切り替わりに間に合わず、新しい表示により新規の条件が作成され、
+		// その後、旧表示に紐付けられたこの関数が実行され、新しい条件が非同期に遅れて実行されたこの関数により意図せず解決されてしまう。
+		// そのため第一引数 cond に条件の参照、第二引数 executed に紐付けた時点での promise を取り、
+		// 非同期に実行された時に、現在の条件の promise と、この関数に与えられた promise を以下のように比較し、
+		// それが偽を示す場合、executed が示す条件は過去のものでかつ既に解決済みとして、cond が示す現在の条件の解決を回避する。
+		// あまり直感的ではない実装だが、一度 then に設定した関数の実行は中止ないし停止できないため、現状妥当と思われる。
+		return () => cond.executed === executed && cond.resolve();
 		
 	}
 	
@@ -658,6 +725,8 @@ class App {
 		
 		if (!attr || typeof attr !== 'object') return;
 		
+		//fe.$.style.setProperty('--timestamp', timestamp),
+		//fe.$.style.setProperty('--time-remaining', f.dur - timestamp),
 		for (k in attr) {
 			i = -1, elms = document.querySelectorAll(k);
 			while (elms[++i]) App.setAttr(undefined, elms[i], attr[k], rx,dict,replacer);
@@ -684,20 +753,33 @@ class App {
 	}
 	static setAttr(type, elm, attr, rx,dict,replacer) {
 		
-		let k;
+		let i,k,k0,v0;
 		
 		if (!(attr && typeof attr === 'object' && elm instanceof HTMLElement)) return;
 		
-		const	obj = type === 'style' ? elm.style : elm,
-				method = type === 'style' ? 'setProperty' : 'setAttribute',
-				r = App.replace;
+		const	asStyle = type === 'style',
+				obj = asStyle ? elm.style : elm,
+				method = asStyle ? 'setProperty' : 'setAttribute',
+				r = App.replace,
+				_attr = {},
+				_dict = isObj(dict) ? { ...dict } : {},
+				filter = elm.dataset.shareCssFilter && elm.dataset.shareCssFilter.split(' '),
+				elms = [ ...document.querySelectorAll(elm.dataset.shareCssQ) ];
 		
-		dict = objc(dict, '__k', type);
-		for (k in attr) obj[method](r(dict.__name = k, rx,dict,replacer), r(dict.___name = attr[k], rx,dict,replacer));
-		delete dict.__k, delete dict.__name, delete dict.___name;
+		_dict.__key = type, (k = elm.closest(elm.dataset.shareCssP)) && !elms.includes(k) && (elms[elms.length] = k);
+		for (k in attr) {
+			obj[method](
+					k0 = r(_dict.__name = k, rx,_dict,replacer),
+					v0 = _attr[k] = r(_dict.___name = attr[k], rx,_dict,replacer)
+				);
+			if (filter && filter.length && filter.includes(k0) && (i = -1))
+				while (elm = elms[++i]) (asStyle ? elm.style : elm)[method](k0, v0);
+		}
+		
+		return _attr;
 		
 	}
-	static lazyCopy(json) {
+	static ezCopy(json) {
 		try {
 			json = JSON.parse(JSON.stringify(json));
 		} catch (error) {
@@ -705,6 +787,18 @@ class App {
 			json = null;
 		}
 		return json;
+	}
+	static fastCopy(from) {
+		
+		if (!from || typeof from !== 'object') return from;
+		
+		const isA = Array.isArray(from), to = isA ? [] : {};
+		let k,v;
+		
+		for (k in from) to[k = isA ? +k : k] = (v = from[k]) && typeof v === 'object' ? App.fastCopy(v) : v;
+		
+		return to;
+		
 	}
 	static fetchRecursive(node, key, childrenName = 'children') {
 		

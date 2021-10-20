@@ -1,0 +1,261 @@
+@keyframes key {
+	
+	from {
+		background:	var(--k-background);
+		border-top: var(--k-border-top);
+		border-right: var(--k-border-right);
+		border-bottom: var(--k-border-bottom);
+		border-left: var(--k-border-left);
+		border: var(--k-border);
+		border-top-left-radius: var(--k-border-top-left-radius);
+		border-top-right-radius: var(--k-border-top-right-radius);
+		border-bottom-right-radius: var(--k-border-bottom-right-radius);
+		border-bottom-left-radius: var(--k-border-bottom-left-radius);
+		border-radius: var(--k-border-radius);
+		filter: var(--filter, none);
+		font: var(--font);
+		left: var(--k-left);
+		height: var(--k-height);
+		opacity: var(--opacity);
+		padding: var(--k-padding);
+		margin: var(--k-margin);
+		text-shadow: var(--text-shadow);
+		top: var(--k-top);
+		transform: var(--transform);
+		transform-origin: var(--transform-origin);
+		width: var(--k-width);
+	}
+	
+	to {
+		background:	var(--k-background-to, var(--k-background));
+		border-top: var(--k-border-top-to, var(--k-border-top));
+		border-right: var(--k-border-right-to, var(--k-border-right));
+		border-bottom: var(--k-border-bottom-to, var(--k-border-bottom));
+		border-left: var(--k-border-left-to, var(--k-border-left));
+		border: var(--k-border-to, var(--k-border));
+		border-top-left-radius: var(--k-border-top-left-radius-to);
+		border-top-right-radius: var(--k-border-top-right-radius-to);
+		border-bottom-right-radius: var(--k-border-bottom-right-radius-to);
+		border-bottom-left-radius: var(--k-border-bottom-left-radius-to);
+		border-radius: var(--k-border-radius-to);
+		filter: var(--filter-to, var(--filter, none));
+		font: var(--font-to, var(--font));
+		left: var(--k-left-to, var(--k-left));
+		height: var(--k-height-to, var(--k-h-calc-to, var(--k-height)));
+		opacity: var(--opacity-to, var(--opacity));
+		padding: var(--k-padding-to, var(--k-padding));
+		margin: var(--k-margin-to, var(--k-margin));
+		text-shadow: var(--text-shadow-to, var(--text-shadow));
+		top: var(--k-top-to, var(--k-top));
+		transform: var(--transform-to, var(--transform));
+		transform-origin: var(--transform-origin-to, var(--transform-origin));
+		width: var(--k-width-to, var(--k-w-calc-to, var(--k-width)));
+	}
+	
+}
+
+.key {
+	
+	--w: initial;
+	--h: initial;
+	--x: initial;
+	--y: initial;
+	--width: initial;
+	--height: initial;
+	
+	--k-w: var(--w, var(--s, 1));
+	--k-h: var(--h, var(--s, 1));
+	--k-w-calc: calc(var(--viewport-width) * var(--k-w));
+	--k-h-calc: calc(var(--viewport-height) * var(--k-h));
+	--k-x: calc((var(--viewport-width) - var(--k-w-calc)) * var(--x, 0));
+	--k-y: calc((var(--viewport-height) - var(--k-h-calc)) * var(--y, 0));
+	
+	--k-width: var(--width, var(--k-w-calc, auto));
+	--k-height: var(--height, var(--k-h-calc, auto));
+	--k-left: var(--left, var(--k-x, auto));
+	--k-top: var(--top, var(--k-y, auto));
+	
+	--k-w-to: var(--w-to, var(--s-to, var(--s, var(--w, 1))));
+	--k-h-to: var(--h-to, var(--s-to, var(--s, var(--h, 1))));
+	--k-w-calc-to: calc(var(--viewport-width) * var(--k-w-to));
+	--k-h-calc-to: calc(var(--viewport-height) * var(--k-h-to));
+	--k-x-to: calc((var(--viewport-width) - var(--k-w-calc-to)) * var(--x-to, var(--x, 0)));
+	--k-y-to: calc((var(--viewport-height) - var(--k-h-calc-to)) * var(--y-to, var(--y, 0)));
+	
+	--k-width-to: var(--width-to, var(--width, var(--k-w-calc-to)));
+	--k-height-to: var(--height-to, var(--height, var(--k-h-calc-to)));
+	--k-left-to: var(--left-to, var(--left, var(--k-x-to)));
+	--k-top-to: var(--top-to, var(--top, var(--k-y-to)));
+	/*--k-width-to: var(--width-to, var(--width, var(--k-w-calc-to)));
+	--k-height-to: var(--height-to, var(--height, var(--k-h-calc-to)));
+	--k-left-to: var(--left-to, var(--left, var(--k-x-to)));
+	--k-top-to: var(--top-to, var(--top, var(--k-y-to)));*/
+	
+	--k-background-attachment: var(--background-attachment, scroll);
+	/* 以下のルールは個別にアニメーションを設定する必要があるかもしれない。現状実質的に未使用 */
+	--k-background-clip: var(--background-clip, border-box);
+	--k-background-color: var(--background-color, transparent);
+	--k-background-image: var(--background-image, none);
+	--k-background-origin: var(--background-origin, padding-box);
+	--k-background-position: var(--background-position, 0% 0%);
+	--k-background-repeat: var(--background-repeat, no-repeat);
+	--k-background-size: var(--background-size, contain);
+	--k-background: var(--background, var(--k-background-image) var(--k-background-position)/var(--k-background-size) var(--k-background-repeat) var(--k-background-origin) var(--k-background-clip) var(--k-background-attachment) var(--k-background-color));
+	--k-background-to: var(--background-to, var(--background));
+	/*--k-background-to: var(--background-to, var(--k-background-image-to, var(--k-background-image)) var(--k-background-position-to, var(--k-background-position))/var(--k-background-size-to, var(--k-background-size)) var(--k-background-repeat-to, var(--k-background-repeat)) var(--k-background-origin-to, var(--k-background-origin)) var(--k-background-clip-to, var(--k-background-clip)) var(--k-background-attachment-to, var(--k-background-attachment)) var(--k-background-color-to, var(--k-background-color)));*/
+	
+	--k-border-color: var(--border-color, initial);
+	--k-border-style: var(--border-style, initial);
+	--k-border-width: var(--border-width, initial);
+	--k-border: var(--border, var(--k-border-color) var(--k-border-style) var(--k-border-width));
+	--k-border-color-to: var(--border-color-to, var(--k-border-color));
+	--k-border-style-to: var(--border-style-to, var(--k-border-style));
+	--k-border-width-to: var(--border-width-to, var(--k-border-width));
+	--k-border-to: var(--border-to, var(--k-border));
+	--k-border-top-color: var(--border-top-color, initial);
+	--k-border-top-style: var(--border-top-style, initial);
+	--k-border-top-width: var(--border-top-width, initial);
+	--k-border-top: var(--border-top, var(--k-border-top-color) var(--k-border-top-style) var(--k-border-top-width));
+	--k-border-top-color-to: var(--border-top-color-to, var(--k-border-color));
+	--k-border-top-style-to: var(--border-top-style-to, var(--k-border-style));
+	--k-border-top-width-to: var(--border-top-width-to, var(--k-border-width));
+	--k-border-top-to: var(--border-top-to, var(--k-border-top));
+	--k-border-right-color: var(--border-right-color, initial);
+	--k-border-right-style: var(--border-right-style, initial);
+	--k-border-right-width: var(--border-right-width, initial);
+	--k-border-right: var(--border-right, var(--k-border-right-color) var(--k-border-right-style) var(--k-border-right-width));
+	--k-border-right-color-to: var(--border-right-color-to, var(--k-border-color));
+	--k-border-right-style-to: var(--border-right-style-to, var(--k-border-style));
+	--k-border-right-width-to: var(--border-right-width-to, var(--k-border-width));
+	--k-border-right-to: var(--border-right-to, var(--k-border-right));
+	--k-border-bottom-color: var(--border-bottom-color, initial);
+	--k-border-bottom-style: var(--border-bottom-style, initial);
+	--k-border-bottom-width: var(--border-bottom-width, initial);
+	--k-border-bottom: var(--border-bottom, var(--k-border-bottom-color) var(--k-border-bottom-style) var(--k-border-bottom-width));
+	--k-border-bottom-color-to: var(--border-bottom-color-to, var(--k-border-color));
+	--k-border-bottom-style-to: var(--border-bottom-style-to, var(--k-border-style));
+	--k-border-bottom-width-to: var(--border-bottom-width-to, var(--k-border-width));
+	--k-border-bottom-to: var(--border-bottom-to, var(--k-border-bottom));
+	--k-border-left-color: var(--border-left-color, initial);
+	--k-border-left-style: var(--border-left-style, initial);
+	--k-border-left-width: var(--border-left-width, initial);
+	--k-border-left: var(--border-left, var(--k-border-left-color) var(--k-border-left-style) var(--k-border-left-width));
+	--k-border-left-color-to: var(--border-left-color-to, var(--border-left-color));
+	--k-border-left-style-to: var(--border-left-style-to, var(--border-left-style));
+	--k-border-left-width-to: var(--border-left-width-to, var(--border-left-width));
+	--k-border-left-to: var(--border-left-to, var(--k-border-left));
+	
+	--k-border-top-left-radius: var(--border-top-left-radius, initial);
+	--k-border-top-right-radius: var(--border-top-right-radius, initial);
+	--k-border-bottom-right-radius: var(--border-bottom-right-radius, initial);
+	--k-border-bottom-left-radius: var(--border-bottom-left-radius, initial);
+	--k-border-radius: var(--border-radius, var(--bk-order-top-left-radius) var(--k-border-top-right-radius) var(--k-border-k-bottom-right-radius) var(--k-border-bottom-left-radius));
+	--k-border-top-left-radius-to: var(--border-top-left-radius-to, initial);
+	--k-border-top-right-radius-to: var(--border-top-right-radius-to, initial);
+	--k-border-bottom-right-radius-to: var(--border-bottom-right-radius-to, initial);
+	--k-border-bottom-left-radius-to: var(--border-bottom-left-radius-to, initial);
+	--k-border-radius-to: var(--border-radius-to, var(--k-border-radius));
+	
+	--k-margin-top: var(--margin-top, 0px);
+	--k-margin-right: var(--margin-right, 0px);
+	--k-margin-bottom: var(--margin-bottom, 0px);
+	--k-margin-left: var(--margin-left, 0px);
+	--k-margin: var(--margin, var(--k-margin-top) var(--k-margin-right) var(--k-margin-bottom) var(--k-margin-left));
+	--k-margin-top-to: var(--margin-top-to, 0px);
+	--k-margin-right-to: var(--margin-right-to, 0px);
+	--k-margin-bottom-to: var(--margin-bottom-to, 0px);
+	--k-margin-left-to: var(--margin-left-to, 0px);
+	--k-margin-to: var(--margin-to, var(--k-margin));
+	
+	--k-padding-top: var(--padding-top, 0px);
+	--k-padding-right: var(--padding-right, 0px);
+	--k-padding-bottom: var(--padding-bottom, 0px);
+	--k-padding-left: var(--padding-left, 0px);
+	--k-padding: var(--padding, var(--k-padding-top) var(--k-padding-right) var(--k-padding-bottom) var(--k-padding-left));
+	--k-padding-top-to: var(--padding-top-to, 0px);
+	--k-padding-right-to: var(--padding-right-to, 0px);
+	--k-padding-bottom-to: var(--padding-bottom-to, 0px);
+	--k-padding-left-to: var(--padding-left-to, 0px);
+	--k-padding-to: var(--padding-to, var(--k-padding));
+	
+	--transform: none;
+	--transform-origin: center;
+	--opacity: 1;
+	
+	--k-font-size: var(--font-size, 1rem);
+	--k-font-weight: var(--font-weight, normal)
+	--k-line-height: var(--line-height, 1);
+	--k-font-family: var(--font-family, "メイリオ", sans-serif);
+	--k-font-size-to: var(--font-size-to, var(--k-font-size));
+	--k-font-weight-to: var(--font-weight-to, var(--k-font-weight))
+	--k-line-height-to: var(--font-height-to, var(--k-line-height));
+	--k-font-family-to: var(--font-family-to, var(--k-font-family));
+	
+	--font: normal normal var(--k-font-weight) var(--k-font-size)/var(--k-line-height) var(--k-font-family);
+	--font-to: normal normal var(--k-font-weight-to) var(--k-font-size-to)/var(--k-line-height-to) var(--k-font-family-to);
+	
+	--k-animation: var(--animation, var(--animation-name, key) var(--animation-duration, var(--dur, 0s)) var(--animation-timing-function, var(--func, ease)) var(--animation-delay, var(--delay, 0s)) var(--animation-iteration-count, var(--iterate, 1)) var(--animation-direction, var(--dir, normal)) var(--animation-fill-mode, forwards) var(--animation-play-mode, running));
+	
+	background:	var(--k-background);
+	border-top: var(--k-border-top);
+	border-right: var(--k-border-right);
+	border-bottom: var(--k-border-bottom);
+	border-left: var(--k-border-left);
+	border: var(--k-border);
+	border-top-left-radius: var(--k-border-top-left-radius);
+	border-top-right-radius: var(--k-border-top-right-radius);
+	border-bottom-right-radius: var(--k-border-bottom-right-radius);
+	border-bottom-left-radius: var(--k-border-bottom-left-radius);
+	border-radius: var(--k-border-radius);
+	display: var(--display, flex);
+	filter: var(--filter, none);
+	font: var(--font);
+	left: var(--k-left);
+	height: var(--k-height);
+	opacity: var(--opacity);
+	padding: var(--k-padding);
+	position: var(--position, absolute);
+	margin: var(--k-margin);
+	text-shadow: var(--text-shadow, none);
+	top: var(--k-top);
+	transform: var(--transform);
+	transform-origin: var(--transform-origin);
+	width: var(--k-width);
+	word-break: var(--word-break, keep-all);
+	writing-mode: var(--writing-mode, inherit);
+	z-index: var(--z-index, 0);
+	
+	animation: var(--k-animation);
+	
+}
+.key.in {
+	
+	--delay: var(--delay-in, 0s);
+	--dur: var(--dur-in, 0s);
+	
+	--opacity: var(--key-in-opacity, 0);
+	--opacity-to: var(--key-in-opacity-to, 1);
+	
+}
+.key.out {
+	
+	--delay: var(--delay-out, 0s);
+	--dur: var(--dur-out, 0s);
+	
+	--opacity: var(--key-out-opacity, var(--key-in-opacity-to, 1));
+	--opacity-to: var(--key-out-opacity-to, var(--key-in-opacity, 0));
+	
+}
+.key.in > .key.out > .key {
+	
+	--delay: var(--delay-primary, 0s);
+	--dur: var(--dur-primary, var(--a-current-duration, var(--a-duration, 0s)));
+	
+}
+.key.primary {
+	
+	--background-image: var(--bgi);
+	--opacity: var(--key-opacity, var(--key-in-opacity-to, 1));
+	--opacity-to: var(--key-opacity-to, var(--key-out-opacity, var(--key-in-opacity-to, initial)));
+	
+}

@@ -1,0 +1,116 @@
+.timeout {
+	
+	--timeout-a-dur-max: .95;
+	--timeout-a-dur: calc(var(--a-current-duration) * var(--timeout-a-dur-max));
+	--timeout-blink-count: 3;
+	/* 以下の変数の値は .02 が好ましいが firefox と chrome では異なり、chrome では想定しない長さになるため chrome に合わせている */
+	--timeout-blink-dur-length: .015;
+	--timeout-blink-dur: calc(var(--timeout-a-dur) * var(--timeout-blink-dur-length));
+	--timeout-margin-value: .6rem;
+	--timeout-transform-to: scale(1,1);
+	--timeout-length-to: 100%;
+	--timeout-size: .5rem;
+	--timeout-background-color-rgb-from: 200,200,200;
+	--timeout-background-color-rgb-to: 240,240,240;
+	--timeout-background-color-from: rgba(var(--timeout-background-color-rgb-from),1);
+	--timeout-background-color-to: rgba(var(--timeout-background-color-rgb-to),1);
+	--timeout-bg-from: linear-gradient(var(--timeout-background-color-from), var(--timeout-background-color-from));
+	--timeout-bg-to: linear-gradient(var(--timeout-background-color-to), var(--timeout-background-color-to));
+	--timeout-bg-blink: linear-gradient(var(--timeout-background-color-from), rgba(var(--timeout-background-color-rgb-from),0) 75%);
+	--timeout-border-color-rgb: 0,0,0;
+	--timeout-border-color: rgba(var(--timeout-border-color-rgb),.8);
+	
+	border-radius: .4rem;
+	background: var(--timeout-bg-from);
+	border: 1px solid var(--timeout-border-color);
+	height: var(--timeout-height);
+	margin: var(--timeout-margin);
+	transform: var(--timeout-transform-from);
+	transform-origin: var(--timeout-transform-origin-from);
+	width: var(--timeout-width);
+	
+	animation:	timeout var(--timeout-a-dur) ease-out 0s 1 normal forwards running,
+					/* 以下の animation-timing-function は steps(2,jump-none) を指定すべきだが、固定値 jump は chrome 77 未満では非対応 */
+					timeout-blink var(--timeout-blink-dur) linear calc(var(--timeout-a-dur) - var(--timeout-blink-dur) * var(--timeout-blink-count)) var(--timeout-blink-count) normal backwards running,
+					timeout-end calc(var(--a-current-duration) - var(--timeout-a-dur)) ease-in var(--timeout-a-dur) 1 normal forwards running;
+	
+}
+.f1 .timeout, .f4 .timeout, .f7 .timeout { --timeout-margin: 0 var(--timeout-margin-value) 0 0; }
+.f2 .timeout, .f5 .timeout, .f8 .timeout { --timeout-margin: 0 0 var(--timeout-margin-value) 0; }
+.f3 .timeout, .f6 .timeout, .f9 .timeout { --timeout-margin: 0 0 0 var(--timeout-margin-value); }
+.f1 .timeout, .f3 .timeout, .f4 .timeout, .f6 .timeout, .f7 .timeout, .f9 .timeout {
+	--timeout-transform-from: scale(1,0);
+	--timeout-transform-origin-from: bottom;
+	--timeout-transform-origin-to: top;
+	--timeout-height: var(--timeout-length);
+	--timeout-width: var(--timeout-size);
+}
+.f2 .timeout, .f5 .timeout, .f8 .timeout {
+	--timeout-transform-from: scale(0,1);
+	--timeout-transform-origin-from: left;
+	--timeout-transform-origin-to: right;
+	--timeout-height: var(--timeout-size);
+	--timeout-width: var(--timeout-length);
+}
+@keyframes timeout {
+	0% {
+		background: var(--timeout-bg-from);
+		opacity: 0;
+		transform: var(--timeout-transform-from);
+	}
+	15% {
+		opacity: 0;
+	}
+	50% {
+		background: var(--timeout-bg-from);
+		opacity: 1;
+	}
+	100% {
+		background: var(--timeout-bg-to);
+		opacity: 1;
+		transform: var(--timeout-transform-to);
+	}
+}
+@keyframes timeout-blink {
+	0% {
+		background: var(--timeout-bg-from);
+		border-color: rgba(var(--timeout-border-color-rgb),1);
+	}
+	50% {
+		background: var(--timeout-bg-from);
+		border-color: rgba(var(--timeout-border-color-rgb),1);
+	}
+	50.1% {
+		background: var(--timeout-bg-blink);
+		border-color: rgba(var(--timeout-border-color-rgb),1);
+	}
+	100% {
+		background: var(--timeout-bg-blink);
+		border-color: rgba(var(--timeout-border-color-rgb),1);
+	}
+	/* steps(2, jump-none) 用のバックアップ*/
+	/*
+	from {
+		background-color: rgba(var(--timeout-background-color-rgb-from),1);
+		border-color: rgba(var(--timeout-border-color-rgb),1);
+	}
+	to {
+		background-color: rgba(var(--timeout-background-color-rgb-from),0);
+		border-color: rgba(var(--timeout-border-color-rgb),0);
+	}
+	*/
+}
+@keyframes timeout-end {
+	from {
+		background: var(--timeout-bg-to);
+		opacity: 1;
+		transform: var(--timeout-transform-to);
+		transform-origin: var(--timeout-transform-origin-to);
+	}
+	to {
+		background: var(--timeout-bg-from);
+		opacity: 0;
+		transform: var(--timeout-transform-from);
+		transform-origin: var(--timeout-transform-origin-to);
+	}
+}

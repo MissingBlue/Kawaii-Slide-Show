@@ -325,7 +325,7 @@ class CHTMLImageSeq extends ExtensionNode {
 		
 	}
 	
-	get cvar() { return this.hasAttribute('cvar') ? JSON.parse(this.getAttribute('cvar')) : null; }
+	get cvar() { return isObj(fromJSON(this.getAttribute('cvar'))) || null; }
 	set cvar(v) { this.setAttribute('cvar', JSON.stringify(v)); }
 	
 	get vn() { return `--${this.getAttribute('vn') || 'image-seq'}`; }

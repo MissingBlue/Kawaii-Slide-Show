@@ -1,0 +1,131 @@
+.copy.key {
+	
+	--z-index: 1;
+	
+	align-items: flex-start;
+	display: flex;
+	flex-direction: row-reverse;
+	justify-content: var(--copy-container-justify-content, space-around);
+	
+	--t-y-primary-v-to: calc(var(--copy-0-t-y-in-v) + var(--copy-0-t-y-amount-primary));
+	--t-y-out-v-to: calc(var(--copy-0-t-y-primary-v-to) + var(--copy-0-t-y-amount-out));
+	
+}
+.hr-copy .copy.key {
+	
+	--copy-writing-mode: horizontal-tb;
+	--copy-transform: var(--copy-container-transform, none);
+	--copy-container-justify-content: center;
+	
+	display: flex;
+	flex-direction: column;
+	
+}
+.copy .key {
+	
+	--width: fit-content;
+	--height: fit-content;
+	--width-to: fit-content;
+	--height-to: fit-content;
+	--position: relative;
+	
+	--transform: translate(var(--t-x),var(--t-y)) scale(var(--t-w, var(--t-s)), var(--t-h, var(--t-s))) rotate(var(--t-r));
+	--transform-to: translate(var(--t-x-to),var(--t-y-to)) scale(var(--t-w-to, var(--t-s-to, var(--t-s, var(--t-w)))), var(--t-h-to, var(--t-s-to, var(--t-s, var(--t-h))))) rotate(var(--t-r-to, var(--t-r)));
+	
+	justify-content: center;
+	
+}
+.copy .key.in {
+	
+	--t-x: var(--t-x-in); --t-x-to: calc(var(--t-x-in) + var(--t-x-amount-in));
+	--t-y: var(--t-y-in); --t-y-to: calc(var(--t-y-in) + var(--t-y-amount-in));
+	--t-s: var(--t-s-in, 1);
+	--t-s-to: var(--t-s-in-to, var(--t-s));
+	--t-w: var(--t-w-in, var(--t-s-in));
+	--t-w-to: var(--t-w-in-to, var(--t-s-in-to));
+	--t-h: var(--t-h-in, var(--t-s-in));
+	--t-h-to: var(--t-h-in-to, var(--t-s-in-to));
+	--t-r: var(--t-r-in, 0deg); --t-r-to: var(--t-r-in-to);
+	
+	--func: var(--copy-func-in, linear);
+	--iterate: var(--copy-iterate-in, 1);
+	--dir: var(--copy-dir-in, normal);
+	
+	--position: var(--position);
+	--top: var(--copy-top);
+	--top-to: var(--copy-top-to);
+	--right: var(--copy-right);
+	--right-to: var(--copy-right-to);
+	--bottom: var(--copy-bottom);
+	--bottom-to: var(--copy-bottom-to);
+	--left: var(--copy-left);
+	--left-to: var(--copy-left-to);
+	
+}
+.copy .key.out {
+	
+	--t-x: calc(var(--t-x-in) + var(--t-x-amount-in) + var(--t-x-amount-primary));
+	--t-x-to: calc(var(--t-x) + var(--t-x-amount-out));
+	--t-y: calc(var(--t-y-in) + var(--t-y-amount-in) + var(--t-y-amount-primary));
+	--t-y-to: calc(var(--t-y) + var(--t-y-amount-out));
+	--t-s: var(--t-s-out, 1);
+	--t-s-to: var(--t-s-out-to, var(--t-s));
+	--t-w: var(--t-w-out, var(--t-s-out));
+	--t-w-to: var(--t-w-out-to, var(--t-s-out-to));
+	--t-h: var(--t-h-out, var(--t-s-out));
+	--t-h-to: var(--t-h-out-to, var(--t-s-out-to));
+	--t-r: var(--t-r-out, 0deg); --t-r-to: var(--t-r-out-to);
+	
+	--func: var(--copy-func-out, linear);
+	--iterate: var(--copy-iterate-out, 1);
+	--dir: var(--copy-dir-out, normal);
+	
+}
+.copy .key.copy-content {
+	
+	--background: var(--copy-background);
+	--background-to: var(--copy-background-to);
+	--border: var(--copy-border);
+	--border-to: var(--copy-border-to);
+	--border-radius: var(--copy-border-radius);
+	--border-radius-to: var(--copy-border-radius-to);
+	--margin: var(--copy-margin);
+	--margin-to: var(--copy-margin-to);
+	--padding: var(--copy-padding);
+	--padding-to: var(--copy-padding-to);
+	
+	--t-x: calc(var(--t-x-in) + var(--t-x-amount-in)); --t-x-to: calc(var(--t-x) + var(--t-x-amount-primary));
+	--t-y: calc(var(--t-y-in) + var(--t-y-amount-in)); --t-y-to: calc(var(--t-y) + var(--t-y-amount-primary));
+	--t-s: var(--t-s-primary, 1);
+	--t-s-to: var(--t-s-primary-to, var(--t-s));
+	--t-w: var(--t-w-primary, var(--t-s-primary));
+	--t-w-to: var(--t-w-primary-to, var(--t-s-primary-to));
+	--t-h: var(--t-h-primary, var(--t-s-primary));
+	--t-h-to: var(--t-h-primary-to, var(--t-s-primary-to));
+	--t-r: var(--t-r-primary, 0deg); --t-r-to: var(--t-r-primary-to);
+	
+	--func: var(--copy-func-primary, linear);
+	--iterate: var(--copy-iterate-primary, 1);
+	--dir: var(--copy-dir-primary, normal);
+	
+	--k-font-family: var(--copy-font-family, serif);
+	--k-font-size: var(--copy-font-size, 5rem);
+	--k-font-weight: var(--copy-font-weight, bold);
+	--k-line-height: var(--copy-line-height, 1);
+	--k-font-family-to: var(--copy-font-family-to, var(--k-font-family));
+	--k-font-size-to: var(--copy-font-size-to, var(--k-font-size));
+	--k-font-weight-to: var(--copy-font-weight-to, var(--k-font-weight));
+	--k-line-height-to: var(--copy-line-height-to, var(--k-font-height));
+	--word-break: var(--copy-word-break, keep-all);
+	--width: var(--copy-width, initial);
+	--height: var(--copy-height, initial);
+	--width-to: var(--copy-width-to, var(--width));
+	--height-to: var(--copy-height-to, var(--height));
+	
+	--opacity: 1;
+	--opacity-to: initial;
+	--writing-mode: var(--writing-mode, vertical-rl);
+	
+	white-space: var(--copy-white-space, nowrap);
+	
+}

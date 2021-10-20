@@ -49,7 +49,7 @@ class Condition {
 	setTimeout(value) {
 		
 		this.pauseTimeout(true),
-		this.timeout.v = typeof value === 'number' ? dbl(value, 1,0,1) : true;
+		this.timeout.v = typeof value === 'number' ? dbl(value, 1,0,Infinity) : true;
 		
 	}
 	setEvents(events, handles) {
@@ -79,7 +79,8 @@ class Condition {
 				to.exec = () => to.promise = new Promise((rs,rj) => (
 						to.resolution = rs,
 						to.rejection = rj,
-						to.timer = setTimeout(() => rs(to), (to.v === true ? defaultTimeout : to.v) * 1000)
+						to.timer =
+							setTimeout(to.callback = () => rs(to), (to._v = (to.v === true ? defaultTimeout : to.v)) * 1000)
 					)).then(Condition.timeouted, Condition.timeouted)
 			),
 		
@@ -99,6 +100,18 @@ class Condition {
 		typeof to.rejection === 'function' && to.rejection((to.error = Condition.REJECTED_MESSAGE_BY_PAUSE, to)),
 		
 		clears && delete to.promise;
+		
+	}
+	// 条件に timeout を含んだ状態で execute したあとに、
+	// timeout の時間を変更したい場合はこの関数を実行すると、execute に伴う Promise の解決に影響を与えずに時間を変更できる。
+	// ただし、元の timeout の時間より長くすることはできない。これは不可能ではないかもしれないが現状未対応。
+	// 第一引数 value に元の時間より長い値を指定した場合、元の時間に丸められる。
+	interruptTimeout(value) {
+		
+		const to = this.timeout;
+		
+		to.promise &&
+			(to.interruption = setTimeout(() => (clearTimeout(to.timer), to.callback()), dbl(value, 1,0,to._v) * 1000));
 		
 	}
 	pauseEvents(clears) {
@@ -186,6 +199,7 @@ class Condition {
 		
 		to.error && (console.error(to.error), delete to.error),
 		
+		clearTimeout(to.interruption),
 		clearTimeout(to.timer),
 		delete to.resolution,
 		delete to.rejection;
@@ -220,8 +234,9 @@ class Condition {
 			event.resolution = rs,
 			event.rejection = rj,
 			event.i = 0,
-										// この分岐は通常の Event であるか、あるいは対象のアニメーションの AnimationEvent であるかを判定
-			event.handler = e =>	(!(e instanceof AnimationEvent) || event.name === e.animationName) &&
+			event.handler = e =>	event.$ === e.target &&
+											// この分岐は通常の Event であるか、あるいは対象のアニメーションの AnimationEvent であるかを判定
+											(!(e instanceof AnimationEvent) || event.name === e.animationName) &&
 											++event.i === event.count &&
 													(event.$.removeEventListener(event.type, event.handler), rs(event));
 			
