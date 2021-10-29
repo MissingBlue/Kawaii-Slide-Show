@@ -16,23 +16,9 @@ profileName: [ 'default' ],
 
 files: [
 	
-	// サンプルファイル記述子。file_path にファイル名を指定すること。
+	// サンプルファイル記述子。プロパティ file_path の img/ 以下に有効なファイル名を指定すること。
 	{
-		file_path: "img/sample-0.png",
-		file_template: '{default_simplex}',
-		//dur: true,
-		//exclusive: true,
-		//file_attribute: 'guest',
-		file_title: '',
-		file_date: '2021 1 1',
-		file_author: '',
-		file_copy_0: '',
-		file_copy_1: '',
-		//file_description: '',
-		//file_description_pos: 'bottom',
-	},
-	{
-		file_path: "img/sample-1.png",
+		file_path: "img/",
 		file_template: '{default_simplex}',
 		//dur: true,
 		//exclusive: true,
