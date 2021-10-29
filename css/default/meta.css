@@ -1,16 +1,26 @@
 /* 擬似クラス関数 :is() は Chromium 88 から */
-.f1 .meta, .f4 .meta, .f7 .meta { justify-content: flex-start; }
+.f1 .meta, .f4 .meta, .f7 .meta {
+	--vertocal-rule-angle: -60deg;
+	--vertical-rule-direction: -1;
+	--meta-pane-1-align-items: flex-start;
+	--meta-pane-1-margin-common-value: -5vmax;
+	--meta-pane-1-margin: 0 var(--meta-pane-1-margin-common-value, -5vmax) 0 0;
+	
+	align-items: flex-start;
+	justify-content: flex-end;
+	flex-direction: row-reverse;
+}
 .f2 .meta, .f5 .meta, .f8 .meta { justify-content: center; }
 .f3 .meta, .f6 .meta, .f9 .meta { justify-content: flex-end; }
 .meta {
 	
 	--meta-margin-vertical: 0rem;
 	
-	--verticul-rule-angle: 60deg;
+	--vertocal-rule-angle: 60deg;
 	--translate-y: 8%;
 	--translate-y-minus: calc(var(--translate-y) * -1);
 	/* tan = Math.tan(deg / (Math.PI / 180)) */
-	--translate-x: calc(var(--translate-y) / /* tan = */ 1.1255751154673213);
+	--translate-x: calc(var(--translate-y) / /* tan = */ 1.1255751154673213 * var(--vertical-rule-direction, 1));
 	--translate-x-minus: calc(var(--translate-x) * -1);
 	
 	--vertical-rule-background-color: rgba(255,255,255,1);
@@ -92,9 +102,10 @@
 	
 }
 .meta .meta-pane-0 .key:not(.in):not(.out) {
+
+	--margin: var(--meta-margin-vertical) 0 0 0;
 	
 	justify-content: flex-start;
-	--margin: var(--meta-margin-vertical) 0 0 0;
 	
 }
 .meta .file-title {
@@ -125,8 +136,8 @@
 }
 .meta .vertical-rule .key:not(.in):not(.out) {
 	
-	--transform: rotate(var(--verticul-rule-angle));
-	--transform-to: rotate(var(--verticul-rule-angle));
+	--transform: rotate(var(--vertocal-rule-angle));
+	--transform-to: rotate(var(--vertocal-rule-angle));
 	
 	--background-color: var(--vertical-rule-background-color);
 	--width: var(--vertical-rule-width);
@@ -135,11 +146,12 @@
 .meta .vertical-rule .key:not(.in):not(.out)::before { content: "\a0"; }
 .meta .meta-pane-1 .key:not(.in):not(.out) {
 	
+	--margin: var(--meta-pane-1-margin, 0 0 0 var(--meta-pane-1-margin-common-value, -5vmax));
+	--padding: 0 0 1rem 0;
 	--text-shadow: 0 0 .5rem rgba(0,0,0,1), 0 0 1rem rgba(0,0,0,.75), 0 1px 0 rgba(0,0,0,1);
 	
+	align-items: var(--meta-pane-1-align-items, flex-end);
 	box-sizing: border-box;
-	--margin: 0 0 0 -3rem;
-	--padding: 0 0 1rem 0;
 	justify-content: flex-end;
 	
 }

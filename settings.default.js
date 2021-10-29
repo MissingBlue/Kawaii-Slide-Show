@@ -1,73 +1,38 @@
+// Change this file name to "settings.js" then app will configures with this settings.
+
+// 必要最小限の設定内容で、処理が重く動作環境を選ぶが表示オプションが豊富なテンプレートを既定で使用する設定ファイル。
+// この設定ファイルを流用する場合、ファイル名を settings.default.js から settings.js に変更すること。
+// 設定ファイルについての詳細な説明は settings.preset.js を参照。
+// 設定ファイルに変更を加えたい場合は、settings.preset.js ではなく、原則 settings.js に対して行なうことを推奨。
+
 const SETTINGS = {
 
 dur: 10,
-// 一枚毎の画像の表示時間。秒数を整数ないし小数で指定。
-
+position: 1,
 app_width: '100%',
 app_height: '50%',
-// 画像フレームの幅(app_width)と、高さ(app_height)。
-// 表示される画像の大きさは、フレームの高さに基づいて自動で決定するため、
-// app_height で指定した値が実質的な画像の表示サイズの基準になる。そのため、app_width は基本的には 100% のままで変更する必要はない。
-// 値の単位は px, % などが使える。% で指定した場合、このスライドショーが属するドキュメントの大きさに対する割合として認識される。
-// いずれの場合も、指定した値はシングルクォーテーション(')かダブルクォーテーション(")で必ず囲んでいる必要がある。
-// OBS で使う際の推奨値としては、頻繁にスライドショーの位置を OBS 上で任意に動かす場合は、app_width: 100%, app_height: 100%、
-// 概ね固定して使用する場合は、スライドショーを読み込んだ OBS のブラウザーソースのプロパティ内から「幅」、「高さ」を配信画面の解像度と同じピクセス数、
-// 例えばフル HD 解像度で配信しているなら 幅:1920 高さ:1080 にした上で、 app_width: 100%, app_height: 40% などとし、
-// 下記の設定値 position に、表示したい位置に合わせた任意の値（例えば左下なら position: 1 ）を指定する。
-
-position: 1,
-// スライドショーの表示位置を、画面を九分割して、1 を左下隅としたテンキーの位置に対応する整数値(1～9)で指定する。
-// 1 より小さい値は 1 になり、9 より大きい値は 9 になる。
-
-latest_term: 7,
-// ファイル記述子内に画像の日付を示すプロパティ file_date が指定されている場合、
-// その日付から現在日時までの日数が、このプロパティ latest_term の示す整数値に収まる場合、
-// その画像のファイル記述子に自動で値を NEW にしたプロパティ file_noteを設定する。
-// 要約すると、現在日時から latest_term 日前までの画像は自動で最新画像扱いされる。
-// この自動最新判定機能を停止したい場合は、このプロパティを削除するか、値に false を指定する。
-// またファイル記述子に file_note が設定されている場合は、その画像に対しては自動判定が行なわれない。
-// 無効な値を指定した場合の既定値は 7（つまり一週間）。
-// なお、file_date の書式は、以下の二重引用符に囲われた "YYYY MM DD" "YY MM DD" "'YY MM DD" の三つのいずれかひとつになる。
-// Y,M,D はいずれも 0 から 9 の範囲を取る数字で、それぞれの文字の数は桁数を示す。さらに Y は年を、M は月を、D は日を示す。
-// 例えば file_date: "2021 10 23" は、"2021年10月23日" と解釈される。
-// 書式内の半角スペースと行頭、行末は数値以外の任意の数の文字列に置き換えできる。例えば file_date: "2021年10月23日" とそのまま指定できることもできるし、
-// file_date: "2021-10-23"、file_date: "2021.10.23"、file_date: "2021ねん10がつ23にち" とすることもできる。
-// これらはいずれも "2021年10月23日" に正規化される。
-// 仮に任意の文字列を file_date に指定したい場合は、同プロパティに上記書式に当てはまらない文字列を指定するか、
-// ファイル記述子内にプロパティ file_actual_date を指定し、画像の日付をそこに指定すれば、file_date に指定した文字列がそのまま表示される。
-// file_actual_date を指定した場合は、file_date に書式に則った文字列を指定しても、その文字列は日付表現に正規化されない。
-
-assets: [],
-// 使用するアセット名。ここで指定したアセットは、すべての画像に対して適用される。
-// 個別にアセットを割り当てる場合は、各ファイル毎に別個で指定することで、ここでの設定が上書きされる。
-
-template: {},
-// プロパティ template 内の値は、必ず JSON 互換でなければならない。
-// 例えばプロパティの値に式や変数は使ってはならない。（逆に言えば template 以外のプロパティには実は式や変数が指定できる、しかし非推奨、非対応）
-// 各 template に begin.promise.index, end.promise.index を設定している場合、
-// 各要素の位置関係は絶対になり、任意に並び替える際は同プロパティの値を必ず変更しなければならない点に留意すること。
 
 profileName: [ 'default' ],
-// 任意のプロファイル名を文字列か、任意の数の文字列のプロファイル名を配列に入れて指定する。
-// 各プロファイル間の同名プロパティはより後方のプロファイルの同名プロパティに上書きされる。
-
-file_title: '',
-file_author: '',
-
-cue: -1,
-// 指定した整数に対応する files 内の画像から再生を開始する。
-// たくさんの画像が指定された files 内の、後方のファイルの表示を、並び順を替えずに確認したい時に有用。
-// 例えば files に三つの画像 'a', 'b', 'c' を指定した場合、通常は 'a' から再生されるが、
-// cue に 1 を指定すると、'b' から再生される。
-// cue に負の整数を指定すると、files を後ろから数えた対応する位置の画像から再生する。
-// 例えば上記の例の場合、cue に -1 を指定すると、再生順は 'c', 'a', 'b', 'c' ... になる。
-// 範囲外の値を指定するか整数以外の値を指定した場合、files の先頭か最後尾に丸められる。
 
 files: [
 	
 	// サンプルファイル記述子。file_path にファイル名を指定すること。
 	{
-		file_path: "img/",
+		file_path: "img/sample-0.png",
+		file_template: '{default_simplex}',
+		//dur: true,
+		//exclusive: true,
+		//file_attribute: 'guest',
+		file_title: '',
+		file_date: '2021 1 1',
+		file_author: '',
+		file_copy_0: '',
+		file_copy_1: '',
+		//file_description: '',
+		//file_description_pos: 'bottom',
+	},
+	{
+		file_path: "img/sample-1.png",
 		file_template: '{default_simplex}',
 		//dur: true,
 		//exclusive: true,
@@ -155,99 +120,8 @@ files: [
 	},
 	*/
 ],
-// 表示する画像のリスト。
-// 角括弧 [] に囲まれた中に画像ファイルの相対パスか絶対パス、または URL を、シングルクォーテーション(')かダブルクォーテーション(")で囲んで指定する。
-// 複数ある場合はコンマ(,)で区切って並べて指定する。このリストに並べた順で表示を行う。
-// ファイルの情報を示すオブジェクト内にプロパティ exclusive を設定し、その値に真を示す値を指定すると、
-// リスト内に他のファイルが存在していても、そのプロパティが設定されたファイルのみ表示される。
-// 逆に言えばファイルリスト内にひとつでも exclusive を設定したファイルがあると、他のファイルは一切表示されない。
-// また、exclusive はプロパティであるため、当然ファイルパスを文字列で直接している場合は設定できない。
-
-resource: {
-	audios: [
-		{ id: 'btn07', src: '', delay: 0, offset: 0, duration: true, gain: 0.05, playbackRate: 2 }
-	]
-},
-// audiosに指定した文字列ないしオブジェクト内のプロパティ src に指定したリソースを音声ファイルとして読み込む。
-// audios は複数指定でき、その際は audios の値を配列にし、その中に読み込む音声ファイルを文字列ないしオブジェクトで列挙する。
-// オブジェクトで指定した場合、音声ファイルの再生形式などのパラメーターを任意で指定できる。
-// パラメーターは主に AudioNode 内の各種コンストラクター関数が受け付けるものに準じており、具体的には以下と同名のパラメーターがそのまま使える。
-// https://developer.mozilla.org/en-US/docs/Web/API/GainNode/GainNode#parameters
-// https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode/AudioBufferSourceNode#parameters
-// ちなみに AudioBufferSourceNode のパラーメーターに相当する delay, offset, duration は、
-// それぞれ再生開始時間、音声ファイルの再生開始位置、再生時間を示し、それらの値はすべて実数（ないし整数）で指定する。
-// ただし、duration は実数として解釈できない値（例えば true など）を指定した場合、音声ファイルの元の再生時間で補完される。
-asset: {
-	sample: [ 'btn07', 'sample' ]
-},
-// 任意のアセット名に、アセットの構成物となるリソースの id を、再生ないし表示順に配列に列挙して指定する。
-
-
-
-// 以下内部処理用
-
-attribute: {
-	guest: {
-		'--dur-multiplier': 1.5,
-		'--dur-add': 0
-	}
-},
-unit_dict: {
-	'--dur-add': [ null, 's' ]
-},
 
 profile: {
-	
-	simple: {
-		
-		css: 'css/simple.css',
-		
-		cssvar: '{"target-raw-rect-height[0]":"{#h*}"}',
-		
-		resource: {
-			audios: [
-				{ id: 'sample', src: 'audios/sample.mp3', delay: 0, offset: 0, duration: true, gain: 1, playbackRate: 1 }
-			]
-		},
-		// audiosに指定した文字列ないしオブジェクト内のプロパティ src に指定したリソースを音声ファイルとして読み込む。
-		// audios は複数指定でき、その際は audios の値を配列にし、その中に読み込む音声ファイルを文字列ないしオブジェクトで列挙する。
-		// オブジェクトで指定した場合、音声ファイルの再生形式などのパラメーターを任意で指定できる。
-		// パラメーターは主に AudioNode 内の各種コンストラクター関数が受け付けるものに準じており、具体的には以下と同名のパラメーターがそのまま使える。
-		// https://developer.mozilla.org/en-US/docs/Web/API/GainNode/GainNode#parameters
-		// https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode/AudioBufferSourceNode#parameters
-		// ちなみに AudioBufferSourceNode のパラーメーターに相当する delay, offset, duration は、
-		// それぞれ再生開始時間、音声ファイルの再生開始位置、再生時間を示し、それらの値はすべて実数（ないし整数）で指定する。
-		// ただし、duration は実数として解釈できない値（例えば true など）を指定した場合、音声ファイルの元の再生時間で補完される。
-		
-		asset: {
-			sample: [ 'sample' ]
-		},
-		
-		assets: [ 'sample' ],
-		
-		template: {
-			
-			default: [
-				
-				{
-					end: { timeout: true },
-					attr: { 'class': 'viewport' },
-					// [[]] refers to the file descriptor or configuration property corresponding to the included string.
-					// The string following : will be used as a default value if there is no corresponding property.
-					children: [ '[[file_author_template:{default_author}]]' ]
-				}
-				
-			],
-			default_author: { tag: 'div', attr: { 'class': 'author' }, text: '[[file_author]]' },
-			wikimedia_author: {
-				tag: 'div', attr: { 'class': 'author wikimedia' }, text: '[[file_author]]',
-				children: '{wikimedia_icon}'
-			},
-			wikimedia_icon: { attr: { 'class': 'wikimedia_icon expat' } }
-			
-		}
-		
-	},
 	
 	default: {
 		
@@ -663,7 +537,13 @@ profile: {
 					'--dur-in': 'calc(var(--time-remaining) * .025)',
 					'--delay-out': 'calc(var(--time-remaining) * .85)',
 					'--dur-out': 'var(--dur-in)',
-					
+					/*
+					'--delay-in': 'calc(var(--time-remaining) * 0)',
+					//'--delay-in': 'calc(var(--time-remaining) * .0)',
+					'--dur-in': 'calc(var(--time-remaining) * .025)',
+					'--delay-out': 'calc(var(--time-remaining) * 1)',
+					'--dur-out': 'var(--dur-in)',
+					*/
 					'--delay-vr-in': 'var(--delay-in)',
 					'--dur-vr-in': 'var(--dur-in)',
 					'--delay-vr-out': 'var(--delay-out)',
@@ -1220,6 +1100,72 @@ profile: {
 				},
 				children: '{default_intercept?default_content}'
 			},
+			attr_content: [
+				{
+					attr: { 'class': 'key in attr-author attr-data' },
+					children: {
+						attr: { 'class': 'key out' },
+						children: {
+							attr: { 'class': 'key primary' },
+							html: '[[file_author]]',
+						}
+					}
+				},
+				{
+					attr: { 'class': 'key in attr-name attr-data' },
+					children: {
+						attr: { 'class': 'key out' },
+						children: {
+							attr: { 'class': 'key primary' },
+							html: 'ゲストアート',
+						}
+					}
+				}
+			],
+			default_attr: [
+				{
+					end: true,
+					attr: { 'class': 'key in attr-bg' },
+					style: {
+						
+						'--key-animation-begin': 'var(--attr-animation-begin)',
+						'--key-animation-transition': 'var(--attr-animation-transition)',
+						'--key-animation-delay': 'var(--attr-animation-delay)',
+						'--key-animation-duration': 'var(--attr-animation-duration)',
+						'--key-animation-end-transition': 'var(--attr-animation-end-transition)',
+						
+					},
+					children: {
+						end: { event: { animationend: { target: true, name: 'key' } } },
+						attr: { 'class': 'key out' },
+						children: { attr: { 'class': 'key primary' } }
+					}
+				},
+				'{attr_content}',
+				'{default_reflection_one}'
+			],
+			attr_content_manga: [
+				{
+					attr: { 'class': 'key in attr-author attr-data' },
+					children: {
+						attr: { 'class': 'key out' },
+						children: {
+							attr: { 'class': 'key primary' },
+							html: '[[file_title]]',
+						}
+					}
+				},
+				{
+					attr: { 'class': 'key in attr-name attr-data' },
+					children: {
+						attr: { 'class': 'key out' },
+						children: {
+							attr: { 'class': 'key primary' },
+							html: '[[file_author]]',
+						}
+					}
+				}
+			],
 			default_key: [
 				{
 					end: true,
@@ -1230,47 +1176,7 @@ profile: {
 						'--ref-one-dur': 'var(--k-time)',
 						
 					},
-					children: [
-						{
-							end: true,
-							attr: { 'class': 'key in attr-bg' },
-							style: {
-								
-								'--key-animation-begin': 'var(--attr-animation-begin)',
-								'--key-animation-transition': 'var(--attr-animation-transition)',
-								'--key-animation-delay': 'var(--attr-animation-delay)',
-								'--key-animation-duration': 'var(--attr-animation-duration)',
-								'--key-animation-end-transition': 'var(--attr-animation-end-transition)',
-								
-							},
-							children: {
-								end: { event: { animationend: { target: true, name: 'key' } } },
-								attr: { 'class': 'key out' },
-								children: { attr: { 'class': 'key primary' } }
-							}
-						},
-						{
-							attr: { 'class': 'key in attr-author attr-data' },
-							children: {
-								attr: { 'class': 'key out' },
-								children: {
-									attr: { 'class': 'key primary' },
-									html: '[[file_author]]',
-								}
-							}
-						},
-						{
-							attr: { 'class': 'key in attr-name attr-data' },
-							children: {
-								attr: { 'class': 'key out' },
-								children: {
-									attr: { 'class': 'key primary' },
-									html: 'ゲストアート',
-								}
-							}
-						},
-						'{default_reflection_one}'
-					]
+					children: '{default_attr}'
 				},
 				{
 					begin: { event: { animationstart: { target: '.attr-bg > .out', persistent: true, name: 'key' } } },
@@ -1511,7 +1417,7 @@ profile: {
 	
 },
 
-version: '0.31',
+version: '0.33',
 
 changes: []
 

@@ -19,12 +19,15 @@ const settingsAvailable = new Promise((rs, rj) => {
 		),
 	preset.addEventListener('load', event => {
 			
-			let i,l,i0,i1,i2, k, cfg, change,compat, sources,from;
+			let i,l,i0,i1,i2, k,k0, cfg, change,compat, sources,from;
 			
 			try { cfg = SETTINGS; } catch (error) { cfg = PRESET_SETTINGS; }
 			
 			!(cfg && typeof cfg === 'object') && (cfg = {});
-			for (k in PRESET_SETTINGS) k in cfg || (cfg[k] = PRESET_SETTINGS[k]);
+			for (k in PRESET_SETTINGS) {
+				k in cfg || (cfg[k] = PRESET_SETTINGS[k]);
+				if (k === 'profile') for (k0 in PRESET_SETTINGS[k]) k0 in cfg[k] || (cfg[k][k0] = PRESET_SETTINGS[k][k0]);
+			}
 			
 			i = -1, l = cfg.changes.length;
 			while (++i < l) {
