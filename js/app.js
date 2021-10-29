@@ -46,7 +46,9 @@ class App {
 		
 		this.dur = cfg.dur,
 		this.pos = cfg.position,
-		this.cue = this.cfg.cue,
+		this.cue = cfg.cue,
+		this.latestTerm = 'latest_term' in cfg ? cfg.latest_term === false || int(cfg.latest_term, 7,0,Infinity) : false,
+		this.latestTermMs = this.latestTerm === false || this.latestTerm * 86400000,
 		
 		this.cc = 1.1,
 		
@@ -135,7 +137,7 @@ class App {
 				appDur = this.dur,
 				fs = this.files,
 				feOption = {};
-		let i,i0,l0, f,lf, fes,fe,elm;
+		let i,i0,l0,k,v,v0, f,lf, fes,fe,elm, date;
 		
 		i = -1;
 		while (f = fs[++i]) {
@@ -151,10 +153,43 @@ class App {
 						)
 			).c =	f.cv._h / mh,
 			
-			this.html.style.setProperty(`--a-${i}-duration`, f.dur = dbl(f.dur, appDur)),
-			typeof f.id === 'string' && f.id && this.html.style.setProperty(`--a-${f.id}-duration`, f.dur),
+			this.html.style.setProperty(`--a-${i}-base-duration`, f.BASE_DUR = (f.baseDur = dbl(f.dur, appDur)) + 's'),
+			typeof f.id === 'string' && f.id && this.html.style.setProperty(`--a-${f.id}-base-duration`, f.BASE_DUR),
 			
 			f.index = int(f.index, 0,-Infinity);
+			
+			// file_attribute に指定された値から、this.cfg.attribute 内の対応するプロパティをこのファイルの拡張値として使用する。
+			if (
+				f.extra = f.file_attribute in this.cfg.attribute && isObj(this.cfg.attribute[f.file_attribute]) && (
+						isObj(f.extra) ?	{ ...this.cfg.attribute[f.file_attribute], ...f.extra } :
+												{ ...this.cfg.attribute[f.file_attribute] }
+					)
+			) {
+				
+				for (k in f.extra) {
+					if (!(k in this.cfg.unit_dict)) continue;
+					if (Array.isArray(this.cfg.unit_dict[k])) {
+						i0 = -1, l0 = (v = [ ...this.cfg.unit_dict[k] ]).length, v0 = f.extra[k], f.extra[k] = '';
+						while (++i0 < l0) f.extra[k] += v[i0] === null ? v0 : v[i0];
+					} else f.extra[k] = this.cfg.unit_dict[k][i0];
+				}
+				
+				f.dur = f.baseDur *
+					(f.extra['--dur-multiplier'] = dbl(f.extra['--dur-multiplier'],1,-Infinity,Infinity)) +
+					(f.extra['--dur-addition'] = dbl(f.extra['--dur-addition'],0,-Infinity,Infinity));
+				
+			} else f.dur = f.baseDur;
+			
+			this.html.style.setProperty(`--a-${i}-duration`, f.DUR = (f.dur = dbl(f.dur, f.baseDur)) + 's'),
+			this.html.style.setProperty(`--dur-${i}`, f.DUR),
+			
+			// file_date の書式に基づいて日付表現の標準化および日付に基づいて NEW の表記の設定判定。
+			date = 'file_actual_date' in f ? f.file_actual_date : f.file_date,
+			this.latestTerm !== false && !f.file_note && (date = App.dateStringRx.exec(date)) &&
+				(
+					(Date.now() - Date.parse(date.slice(1).join('-'))) < this.latestTermMs && (f.file_note = 'NEW'),
+					('file_actual_date' in f && 'file_date' in f) || (f.file_date = `${date[1]}年${date[2]}月${date[3]}日`)
+				),
 			
 			// 子要素
 			f.delayedReplace.clear(), f.serial.length = 0,
@@ -228,6 +263,7 @@ class App {
 		if (elm instanceof HTMLElement) {
 			
 			i = -1, l = (children = fe.children = arr(this.getTemplate(fe.children, template, r) || fe.children)).length;
+			
 			while (++i < l) {
 				
 				if (child = this.getTemplate(children[i], template, r)) {
@@ -334,7 +370,11 @@ class App {
 												)
 											) break;
 					
-					return v === undefined ? defaultValue === undefined ? '' : defaultValue : v;
+					// 以前は、指定されたプロパティの値が空文字列だった場合、空文字列がそのまま返されていたが、
+					// 現在は空文字列の場合は v が示す値が偽を示す場合は常にdefaultValue を返すように変更。
+					// これにより任意に空文字を値とすることができなくなるが、その際は defaultValue を未指定ないし空文字にすれば
+					// 完全にではないが代替できないことはない。
+					return v || (defaultValue === undefined ? '' : defaultValue);
 					
 				}
 				
@@ -360,6 +400,9 @@ class App {
 					fe.$style && App.setAttr('style', fe.$, fe.$style, fe.attrRx,undefined,fe.attrReplacer)
 					//placeholder.html && (html = App.replace(fe.html, rx,undefined,replacer));
 				),
+				
+				fe.$.style.setProperty('--elapsed-time', (Date.now() - f.time) / 1000 + 's'),
+				fe.$.style.setProperty('--time-remaining', f.dur - (Date.now() - f.time) / 1000 + 's'),
 				
 				fe.parent && this.getParent(fe,f).appendChild(fe.$),
 				
@@ -436,7 +479,9 @@ class App {
 	transited(f, lf) {
 		
 		const fs = this.files, li = fs.indexOf(f) + 1;
-		let i,fe;
+		let i,k, fe;
+		
+		if (f.extra) for (k in f.extra) this.html.style.removeProperty(k);
 		
 		i = -1;
 		while (fe = f.serial[++i])
@@ -451,7 +496,7 @@ class App {
 				fl = f.serial.length,
 				finished = () => ++ei === fl && this.transited(f, lf),
 				exec = App.createExecution;
-		let i,l,i0,l0, ei, aid,rid,ex, p,fe,xFe,sib,fel;
+		let i,l,i0,l0,k, ei, aid,rid,ex, p,fe,xFe,sib,fel;
 		
 		// リソースの設定
 		if (this.resource) {
@@ -497,7 +542,14 @@ class App {
 			
 		}
 		
-		this.html.style.setProperty('--a-current-duration', f.dur + 's'),
+		if (f.extra) for (k in f.extra) this.html.style.setProperty(k, f.extra[k]);
+		
+		this.html.style.setProperty('--a-current-base-duration', f.BASE_DUR),
+		this.html.style.setProperty('--base-time', f.BASE_DUR),
+		this.html.style.setProperty('--a-current-duration', f.DUR),
+		this.html.style.setProperty('--time', f.DUR),
+		this.html.style.setProperty('--time-diff', f.dur - f.baseDur + 's'),
+		this.html.style.setProperty('--has-time-diff', f.DUR === f.BASE_DUR ? 0 : 1),
 		
 		this.appNode.dataset.current = typeof f.id === 'string' ? f.id : '',
 		this.appNode.dataset.currentLabel =
@@ -505,6 +557,8 @@ class App {
 		this.appNode.dataset.currentLabel === '' && delete this.appNode.dataset.currentLabel,
 		
 		App.setCSSV(this.body, f.ccv),
+		
+		f.time = Date.now(),
 		
 		i = -1, ei = 0;
 		while (fe = f.serial[++i])
@@ -516,7 +570,7 @@ class App {
 		i = -1;
 		while (fe = f.serial[++i]) {
 			
-			fel = (sib = fe.nested ? fe.nested.children : fes).length;
+			fel = int((sib = fe.nested ? fe.nested.children : fes).length, 0,0,Infinity);
 			
 			if (fe.begin) {
 				
@@ -553,28 +607,6 @@ class App {
 				(fe.nested ? fe.nested.ends.then(exec(fe.endCond, fe.endCond.executed)) : fe.endCond.resolve());
 		
 		}
-		
-		// この setTimeout は Firefox で生じる、大量の CSS 再計算がすべてのスレッドを停止させる問題に対応するための便宜的な対応。
-		// この関数内で、スライドショーに表示させる画像の切り替えを行なっているが、設定に依存するが、
-		// 切り換え直後は大量の要素の入れ替えが行われることが想定される。
-		// それに伴い要素の追加毎に随時 CSS の再計算が行なわれることが考えられるが、
-		// Firefox はそのために setTimeout などの非同期処理を含むページ内のスレッド（恐らくは）全体を止めてしまう。
-		// これにより、JavaScript と CSS との間に時間的な不整合が生じる。
-		// これは、通常問題に現れにくいが、この処理では JavaScript 側で画像の切り替え開始時間を記録し、
-		// それを基に CSS 変数に、現在の画像の再生時間を間接的に CSS 側に伝えるため、
-		// 例えば CSS 再計算に 500ms かかった場合、CSS の animation が再生開始するのは、切り換え後 +500ms だが、
-		// JavaScript 側で記録している切り換え開始時間はそれよりも -500ms になるため、現在の表示経過時間が常に -500ms になる。
-		// これだけなら、animation の開始を addEventListener で捕捉してそれを開始時間とすればいいが、
-		// この処理は animation の使用は任意であるため、それに依存して時間を決めることは現実的ではない。
-		// 様々な解決策が考えられるかもしれないが、Firefox の仕様の変更や chromium 系ブラウザーへの影響を最小限に留めるため、
-		// 現段階では Firefox が setTimeout をも止めることを逆手に取り、実行時間を 0 秒にした無意味な setTimeout を実行して、
-		// CSS の再計算とともにすべてのスレッドが再稼動した時点を画像の表示開始開始時間として記録するコールバック関数を実行している。
-		// これは上記の仕様の Firefox 以外にとっては完全に無意味な処理であるため、仮に Firefox が仕様を改めたら修正すべきである。
-		// また現状、Firefox が無差別的にスレッドを停止させるためにこの解決策で問題が解消されるが、
-		// 選択的にスレッドを停止するようなさらに半端な仕様に変更された場合、再び問題が表面化する可能性がある。
-		// そのため、画像の表示時間が意図しない長さになった場合、この setTimeout のコール版数の中身を直接実行するように変更するなどして確認することを推奨する。
-		// なお、この setTimeout のコールバック関数が実行する処理そのものは、この処理全体において必要欠くべからざる処理である。
-		setTimeout(() => f.time = Date.now(), 0);
 		
 		
 		//this.timer || (this.timerDate = Date.now(), hi(Date.now() - this.timerDate), this.timer = setTimeout(()=>hi(Date.now() - this.timerDate),16));
@@ -629,6 +661,7 @@ class App {
 	static ignoresProperties = [ 'files' ];
 	static eventOnce = { once: true };
 	static appPosRx = /(?:^|\s)+(f\d)(?:\s|$)+/;
+	static dateStringRx = /^[^\d]*?(\d{4}|'?\d{2})[^\d]+(\d{1,2})[^\d]+(\d{1,2})[^\d]*?$/;
 	static templateNameRx = /\{.+\}/;
 	static delayedRatePlaceholderRx = /(?:(\!([.\d]+)\!)|(\?([.\d]+)\?)|(\[\[([^\r\n\t]+)\]\]))/g;
 	static customElementConstructors = [ CHTMLImageSeq, CHTMLImageSeqItem ];

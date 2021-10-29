@@ -1,0 +1,102 @@
+.desc:not([data-file-description]), .desc[data-file-description=""] {
+	display: none !important;
+}
+.desc:not([data-file-description-position^="t"]):not([data-file-description-position^="b"]),
+.desc[data-file-description-position^="r"],
+.desc[data-file-description-position^="l"]
+{
+	
+	--height: 100%;
+	--width: 50%;
+	
+	--desc-align-items: center;
+	--desc-justify-content: center;
+	--transform-in: translate(calc(1% * var(--transform-translate-value)),0%);
+	--transform-in-to: translate(0%,0%);
+	--transform-out: translate(0%,0%);
+	--transform-out-to: translate(calc(1% * var(--transform-translate-value)),0%);
+	
+}
+.desc[data-file-description-position^="t"],
+.desc[data-file-description-position^="b"]
+{
+	
+	--height: 50%;
+	--width: 100%;
+	
+	--desc-align-items: center;
+	--desc-justify-content: flex-start;
+	--transform-in: translate(0%,calc(1% * var(--transform-translate-value)));
+	--transform-in-to: translate(0%,0%);
+	--transform-out: translate(0%,0%);
+	--transform-out-to: translate(0%,calc(1% * var(--transform-translate-value)));
+	
+}
+.desc[data-file-description-position^="t"]
+{
+	--left: 0%;
+	--top: 0%;
+}
+.desc:not([data-file-description-position^="t"]):not([data-file-description-position^="b"]):not([data-file-description-position^="l"])
+{
+	--left: 50%;
+	--top: 0%;
+}
+.desc[data-file-description-position^="b"]
+{
+	--left: 0%;
+	--top: 50%;
+}
+.desc[data-file-description-position^="l"]
+{
+	--left: 0%;
+	--top: 0%;
+}
+.desc
+{
+	
+	--display: flex;
+	--padding: 1vmax;
+	--position: absolute;
+	--transform-translate-value: 5;
+	--transform: var(--transform-in);
+	--transform-to: var(--transform-in-to);
+	--z-index: 1;
+	
+	box-sizing: border-box;
+	
+}
+.desc.in > .out {
+	
+	--blur-color: rgba(0,0,0,.2);
+	--blur: 2vmax;
+	
+	--background: var(--blur-color);
+	--box-shadow: 0px 0px var(--blur) var(--blur) var(--blur-color);
+	--height: auto;
+	--left: 0;
+	--top: 0;
+	--position: relative;
+	--transform: var(--transform-out);
+	--transform-to: var(--transform-out-to);
+	--width: 100%;
+	
+}
+.desc.in > .out > .primary {
+	
+	--display: flex;
+	--font-size: 3vmax;
+	--font-family: serif;
+	--font-weight: bold;
+	--height: auto;
+	--padding: 1vmax;
+	--text-shadow: 0 2px 0 rgba(0,0,0,1);
+	--transform: initial;
+	--transform-to: initial;
+	--width: 100%;
+	
+	align-items: var(--desc-align-items);
+	justify-content: var(--desc-justify-content);
+	word-break: break-all;
+	
+}

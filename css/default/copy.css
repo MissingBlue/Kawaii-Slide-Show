@@ -3,6 +3,7 @@
 	--z-index: 1;
 	
 	align-items: flex-start;
+	box-sizing: border-box;
 	display: flex;
 	flex-direction: row-reverse;
 	justify-content: var(--copy-container-justify-content, space-around);
@@ -22,11 +23,20 @@
 	
 }
 .copy .key {
-	
+	/*
+	--key-animation-begin: var(--copy-animation-begin, initial);
+	--key-animation-transition: var(--copy-animation-transition, initial);
+	--key-animation-delay: var(--copy-animation-delay, initial);
+	--key-animation-duration: var(--copy-animation-duration, initial);
+	--key-animation-end: var(--copy-animation-end, initial);
+	--key-animation-end-transition: var(--copy-animation-end-transition, initial);
+	*/
 	--width: fit-content;
 	--height: fit-content;
 	--width-to: fit-content;
 	--height-to: fit-content;
+	--margin: initial;
+	--padding: initial;
 	--position: relative;
 	
 	--transform: translate(var(--t-x),var(--t-y)) scale(var(--t-w, var(--t-s)), var(--t-h, var(--t-s))) rotate(var(--t-r));
@@ -51,6 +61,8 @@
 	--iterate: var(--copy-iterate-in, 1);
 	--dir: var(--copy-dir-in, normal);
 	
+	--margin: var(--copy-margin, 0);
+	--margin-to: var(--copy-margin-to);
 	--position: var(--position);
 	--top: var(--copy-top);
 	--top-to: var(--copy-top-to);
@@ -89,9 +101,7 @@
 	--border-to: var(--copy-border-to);
 	--border-radius: var(--copy-border-radius);
 	--border-radius-to: var(--copy-border-radius-to);
-	--margin: var(--copy-margin);
-	--margin-to: var(--copy-margin-to);
-	--padding: var(--copy-padding);
+	--padding: var(--copy-padding, 0);
 	--padding-to: var(--copy-padding-to);
 	
 	--t-x: calc(var(--t-x-in) + var(--t-x-amount-in)); --t-x-to: calc(var(--t-x) + var(--t-x-amount-primary));

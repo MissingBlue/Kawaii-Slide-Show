@@ -29,7 +29,7 @@
 	justify-content: var(--flex-justify-content);
 	width: var(--w);
 	
-	animation: transition calc(var(--a-current-duration) * .04) ease-in 0s 1 var(--app-anime-default-rule);
+	animation: transition calc(var(--time) * .04) ease-in 0s 1 var(--app-anime-default-rule);
 	
 }
 @keyframes transition {

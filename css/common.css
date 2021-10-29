@@ -7,6 +7,7 @@
 	
 	--a-duration: 5s;
 	--a-current-duration: var(--a-duration);
+	--time: var(--a-current-duration);
 	--a-iteration-count: infinite;
 	--a-current-iteration-count: var(--a-iteration-count);
 	--a-play-state: running;
@@ -69,7 +70,7 @@ body {
 body.initialized {
 	
 	animation:	interval
-					var(--a-current-duration, var(--a-duration))
+					var(--time, var(--a-duration))
 					end
 					0s
 					var(--a-current-iteration-count, var(--a-iteration-count))

@@ -1,12 +1,14 @@
 .reflection {
 	
-	--bgi-reflect-color-0: transparent;
-	--bgi-reflect: linear-gradient(135deg, var(--bgi-reflect-color-0) 20%, rgba(255,255,255,calc(3/4)) 22.5%, rgba(255,255,255,0) 75%, var(--bgi-reflect-color-0));
-	--bgi-reflect-height: 400;
+	--bgi-reflect-color-0: 255,255,255;
+	--bgi-reflect-color-1: 255,255,255;
+	--bgi-reflect: linear-gradient(135deg, rgba(var(--bgi-reflect-color-0),0) 20%, rgba(var(--bgi-reflect-color-1),calc(3/4)) 22.5%, rgba(var(--bgi-reflect-color-1),0) 75%, rgba(var(--bgi-reflect-color-0),0));
+	/*--bgi-reflect-height: 400;*/
+	--bgi-reflect-height: var(--viewport-raw-width);
 	--bgi-reflect-size: 100% calc(var(--bgi-reflect-height) * 1%);
 	--bgi-reflect-pos-y: calc(-100 / (var(--bgi-reflect-height) - 100) * 100%);
-	--bgi-reflect-pos-0: 0% var(--bgi-reflect-pos-y);
-	--bgi-reflect-pos-1: 0% calc(var(--bgi-reflect-pos-y) * -1 + 100%);
+	--bgi-reflect-pos: 0% var(--bgi-reflect-pos-y);
+	--bgi-reflect-pos-to: 0% calc(var(--bgi-reflect-pos-y) * -1 + 100%);
 	
 	--ref-func: ease;
 	--ref-count: 1;
@@ -26,11 +28,11 @@
 }
 @keyframes reflection {
 	
-	0% {
-		background: var(--bgi-reflect) var(--bgi-reflect-pos-0)/var(--bgi-reflect-size) no-repeat;
+	from {
+		background: var(--bgi-reflect) var(--bgi-reflect-pos)/var(--bgi-reflect-size) no-repeat;
 	}
-	100% {
-		background: var(--bgi-reflect) var(--bgi-reflect-pos-1)/var(--bgi-reflect-size) no-repeat;
+	to {
+		background: var(--bgi-reflect) var(--bgi-reflect-pos-to)/var(--bgi-reflect-size) no-repeat;
 	}
 	
 }

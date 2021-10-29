@@ -61,7 +61,7 @@ class Condition {
 		
 		i = evs.length;
 		for (k in events) {
-			i0 = -1, l0 = events[k].length;
+			i0 = -1, l0 = (events[k] = arr(events[k])).length;
 			while (++i0 < l0)	typeof (ev = evs[i++] = { ...objc(events[k][i0], 'target') }).target === 'string' ||
 										(ev.target = int(ev.target, true,-Infinity)),
 									ev.of = this,
@@ -195,6 +195,7 @@ class Condition {
 	static REJECTED_MESSAGE_BY_PAUSE = 'Paused a condition.';
 	static REJECTED_MESSAGE_BY_RESET = 'The condition was rejected by an user.';
 	static REJECTED_MESSAGE_SAFELY = 'The condition mieght be rejected safely. This means the error affects nothing.';
+	static eventTargetObserveInit = { childList: true, subtree: true };
 	static timeouted(to) {
 		
 		to.error && (console.error(to.error), delete to.error),
@@ -229,7 +230,7 @@ class Condition {
 		return () => event.promise = new Promise((rs, rj) => {
 			
 			const evs = condition.events, l = evs.length - 1;
-			let begun;
+			let target, begun;
 			
 			event.resolution = rs,
 			event.rejection = rj,
@@ -243,7 +244,24 @@ class Condition {
 			switch (typeof event.target) {
 				
 				case 'string':
-				event.$ = document.querySelector(event.target) || defaultElement;
+				if (target = document.querySelector(event.target)) {
+					
+					event.$ = target;
+					
+				} else if (event.persistent) {
+					
+					// target に指定したセレクターがマッチせず、かつ persistent が真を示す時、
+					// ドキュメントのルート要素内の要素の追加を MutationObserver で検出し、その際に targrt にマッチする要素が存在するか確認する。
+					// 存在した場合、その Promise をその要素で解決する。
+					
+					begun = new Promise(rs =>
+							(event.observer = new MutationObserver(
+									mr =>	(event.$ = document.querySelector(event.target)) &&
+												(event.observer.disconnect(), rs(event))
+								)).observe(document.querySelector(':root'), Condition.eventTargetObserveInit)
+						);
+					
+				} else event.$ = defaultElement;
 				break;
 				
 				case 'number':
@@ -257,7 +275,7 @@ class Condition {
 			
 			(
 				begun ?	begun.then(target => event.$ = target.$) :
-							(typeof event.executed === 'function' && event.executed(event), Promise.resolve(event.$))
+							(typeof event.executed === 'function' && event.executed(event), Promise.resolve())
 			).then(() => event.$.addEventListener(event.type, event.handler));
 			
 		}).then(Condition.xExecutedEvent,Condition.xExecutedEvent);
@@ -268,6 +286,8 @@ class Condition {
 		event.$.removeEventListener(event.type, event.handler),
 		
 		event.error && (console.error(event.error), delete event.error),
+		
+		event.observer instanceof MutationObserver && (event.observer.disconnect(), delete event.observer),
 		
 		delete event.resolution,
 		delete event.rejection,

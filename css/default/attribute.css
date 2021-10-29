@@ -1,0 +1,137 @@
+.attribute {
+	
+	--z-index: 1;
+	
+	align-items: center;
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	justify-content: center;
+	left: 0%;
+	position: absolute;
+	top: 0%;
+	width: 100%;
+	
+}
+
+.attr-bg, .attr-bg * {
+	
+	--left: 0%;
+	--height: 100%;
+	--position: absolute;
+	--top: 0%;
+	--width: 100%;
+	
+}
+.attr-bg.in {
+}
+.attr-bg .out {
+	
+	--func: ease-out;
+	--left: 0%;
+	--left-to: 100%;
+	--opacity-to: 1;
+	
+}
+.attr-bg .primary {
+	
+	--background-image-gradient-stops-color-out: rgba(255,0,0,1);
+	--background-image-gradient-stops-out: var(--background-image-gradient-stops-color-out), var(--background-image-gradient-stops-color-out);
+	--background-image-out: linear-gradient(var(--background-image-gradient-stops-out));
+	--background-color-out: transparent;
+	
+	--bgsize: var(--viewport-width) var(--viewport-height);
+	--bgpos: 0% 0%;
+	--bgpos-to: 0% 0%;
+	/*--bgpos-to: var(--viewport-width) 0%;*/
+	
+	--bg-transparent-tile-color-0: rgba(255,255,255,.33);
+	--bg-transparent-tile-color-1: rgba(255,255,255,.1);
+	--bgsize-0: 80px 80px;
+	--bg-0: conic-gradient(var(--bg-transparent-tile-color-0) 0.25turn, var(--bg-transparent-tile-color-1) 0.25turn 0.5turn, var(--bg-transparent-tile-color-0) 0.5turn 0.75turn, var(--bg-transparent-tile-color-1) 0.75turn) repeat;
+	--bg-1: radial-gradient(ellipse at left top, rgba(255,255,255,.6), rgba(255,255,255,0));
+	
+	/*--box-shadow: 0 0 10vmax 0vmax rgba(255,255,255,.9) inset;*/
+	--background:	var(--bgpos)/var(--bgsize) var(--bg-1),
+						var(--bgpos)/var(--bgsize-0) var(--bg-0),
+						var(--bgpos)/var(--bgsize) var(--background-image-out) var(--background-color-out) no-repeat;
+	--background-to:	var(--bgpos)/var(--bgsize) var(--bg-1),
+							var(--bgpos-to)/var(--bgsize-0) var(--bg-0),
+							var(--bgpos-to)/var(--bgsize) var(--background-image-out) var(--background-color-out) no-repeat;
+	
+}
+
+.attr-data {
+	
+	--background: transparent;
+	--background-to: transparent;
+	--color: rgba(255,255,255,1);
+	--height: auto;
+	--position: static;
+	--width: auto;
+	
+	position: relative;
+	display: flex;
+	
+}
+.attr-data.attr-author {
+	
+	--font-family: "Arial Black", "メイリオ";
+	--font-weight: bold;
+	--font-size: 8vmax;
+	
+	letter-spacing: -.3rem;
+	
+}
+.attr-data.attr-name {
+	
+	--font-family: "Arial";
+	--font-size: 4vmax;
+	
+	letter-spacing: -.1rem;
+	
+}
+.attr-data * {
+	
+	--background: transparent;
+	--background-to: transparent;
+	--height: auto;
+	--width: auto;
+	--opacity: 1;
+	--opacity-to: 1;
+	
+	position: relative;
+	
+}
+.attr-data.in {
+	
+	--key-animation-begin: .3;
+	--key-animation-transition: .05;
+	--key-animation-duration: calc(1 - var(--key-animation-begin) - var(--key-animation-transition) * 2);
+	--func: cubic-bezier(0.24, 0.3, 0.18, 1.52);
+	--transform: scale(0);
+	--transform-to: scale(1);
+	
+}
+.attr-author.attr-data.in {
+	
+}
+.attr-name.attr-data.in {
+	
+}
+.attr-data .out {
+	
+	--transform: scale(1);
+	--transform-to: scale(0);
+	--func: cubic-bezier(0.77,-0.37, 0.58, 0.74);
+	
+}
+.attr-data .primary {
+	
+	--transform: none;
+	--transform-to: none;
+	
+}
+.attr-author .primary {
+	
+}

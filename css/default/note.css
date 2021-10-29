@@ -1,4 +1,4 @@
-[data-note]:not([data-note=""]) .note.in {
+[data-notation]:not([data-notation=""]).note.in {
 	
 	--func: cubic-bezier(1,-1.11,0,2.43);
 	--height: var(--size);
@@ -8,22 +8,24 @@
 	--transform-scale: 0, 0;
 	--transform-scale-to: 1, 1;
 	--transform: rotate(0deg) scale(var(--transform-scale));
-	--transform-to: rotate(-10deg) scale(var(--transform-scale-to));
+	--transform-to: rotate(var(--transform-rotate)) scale(var(--transform-scale-to));
 	--transform-origin: center;
 	--top: var(--pos);
 	--width: var(--size);
 	--z-index: 1;
 	
 }
-.f2 .note, .f3 .note, .f5 .note, .f6 .note, .f8 .note, .f9 .note {
+.f2 .note.in, .f3 .note.in, .f5 .note.in, .f6 .note.in, .f8 .note.in, .f9 .note.in {
 	--left: var(--pos);
-	--right: unset;
+	--right: initial;
+	--transform-rotate: -10deg;
 }
-.f1 .note, .f4 .note, .f7 .note {
-	--left: unset;
+.f1 .note.in, .f4 .note.in, .f7 .note.in {
+	--left: initial;
 	--right: var(--pos);
+	--transform-rotate: 5deg;
 }
-[data-note]:not([data-note=""]) .note .out {
+[data-notation]:not([data-notation=""]).note .out {
 	
 	--height: 100%;
 	--left: initial;
@@ -31,19 +33,22 @@
 	--top: initial;
 	--transform-scale: 1, 1;
 	--transform-scale-to: 0, 0;
-	--transform: rotate(-10deg) scale(var(--transform-scale));
-	--transform-to: rotate(-10deg) scale(var(--transform-scale-to));
+	--transform: rotate(var(--transform-rotate)) scale(var(--transform-scale));
+	--transform-to: rotate(var(--transform-rotate)) scale(var(--transform-scale-to));
 	--transform-origin: center;
 	--width: 100%;
 
 }
-[data-note]:not([data-note=""]) .note .primary {
+[data-notation]:not([data-notation=""]).note .primary {
 	
 	--background: linear-gradient(var(--bg-color-0),var(--bg-color-1) 100%);
 	--bg-color-0: rgba(255,120,120,1);
 	--bg-color-1: rgba(255,255,255,0);
 	--border-radius: 100%;
 	--height: 100%;
+	--left: initial;
+	--right: initial;
+	--top: initial;
 	--transform: initial;
 	--transform-to: initial;
 	--width: 100%;
@@ -53,68 +58,17 @@
 	justify-content: center;
 	
 }
-[data-note~="latest"] .note .primary::before {
-	content: "NEW";
+[data-notation]:not([data-notation=""]).note .primary::before {
+	content: attr(data-notation);
 	font-family: "Arial Black";
 	font-size: 4vmax;
 	letter-spacing: -4px;
 	text-shadow: .275vmax .275vmax 0 rgba(0,0,0,1);
 }
-/*
-[data-note] .note {
-	
-	--bg-color-0: rgba(255,120,120,1);
-	--bg-color-1: rgba(255,255,255,0);
-	--size: 4.5rem;
-	--delay: calc(var(--a-current-duration) * 1 / 10);
-	
-	align-items: center;
-	background: linear-gradient(var(--bg-color-0),var(--bg-color-1) 100%);
-	border-radius: 100%;
-	display: flex;
-	height: var(--size);
-	justify-content: center;
-	left: var(--note-left);
-	position: absolute;
-	right: var(--note-right);
-	top: 0;
-	transform: var(--note-transform-from);
-	visibility: visible;
-	width: var(--size);
-	will-change: contents;
-	z-index: 1;
-	
-	animation: note calc((var(--a-current-duration) - var(--delay)) / 2) ease var(--delay) 1 alternate forwards running;
-	
-}
-.f2 .note, .f3 .note, .f5 .note, .f6 .note, .f8 .note, .f9 .note {
-	--note-left: 0;
-	--note-right: unset;
-	--note-transform-from: translate(-25%,-25%) rotate(0deg) scale(0,0);
-	--note-transform-to: translate(-25%,-25%) rotate(-10deg) scale(1,1);
-}
-.f1 .note, .f4 .note, .f7 .note {
-	--note-left: unset;
-	--note-right: 0;
-	--note-transform-from: translate(25%,-25%) rotate(0deg) scale(0,0);
-	--note-transform-to: translate(25%,-25%) rotate(-10deg) scale(1,1);
-}
-@keyframes note {
-	0% {
-		transform: var(--note-transform-from);
-	}
-	5% {
-		transform: var(--note-transform-to);
-	}
-	100% {
-		transform: var(--note-transform-to);
-	}
-}
-[data-note~="latest"] .note::before {
-	content: "NEW";
-	font-family: "Arial Black";
-	font-size: 2.5rem;
+[data-notation="表示価格より半額"].note .primary::before {
+	font-family: "源ノ角ゴシック";
+	font-size: 2vmax;
+	font-weight: 1000;
 	letter-spacing: -4px;
-	text-shadow: .2rem .2rem 0 rgba(0,0,0,1);
+	text-shadow: .275vmax .275vmax 0 rgba(0,0,0,1);
 }
-*/

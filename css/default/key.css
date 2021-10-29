@@ -12,13 +12,18 @@
 		border-bottom-right-radius: var(--k-border-bottom-right-radius);
 		border-bottom-left-radius: var(--k-border-bottom-left-radius);
 		border-radius: var(--k-border-radius);
+		bottom: var(--k-bottom);
+		box-shadow: var(--k-box-shadow);
+		clip-path: var(--k-clip-path);
+		color: var(--color);
 		filter: var(--filter, none);
 		font: var(--font);
 		left: var(--k-left);
 		height: var(--k-height);
+		margin: var(--k-margin);
 		opacity: var(--opacity);
 		padding: var(--k-padding);
-		margin: var(--k-margin);
+		right: var(--k-right);
 		text-shadow: var(--text-shadow);
 		top: var(--k-top);
 		transform: var(--transform);
@@ -37,14 +42,19 @@
 		border-top-right-radius: var(--k-border-top-right-radius-to);
 		border-bottom-right-radius: var(--k-border-bottom-right-radius-to);
 		border-bottom-left-radius: var(--k-border-bottom-left-radius-to);
-		border-radius: var(--k-border-radius-to);
+		border-radius: var(--k-border-radius-to, var(--k-border-radius));
+		bottom: var(--k-bottom-to, var(--k-bottom));
+		box-shadow: var(--k-box-shadow-to);
+		clip-path: var(--k-clip-path-to);
+		color: var(--color-to, var(--color));
 		filter: var(--filter-to, var(--filter, none));
 		font: var(--font-to, var(--font));
 		left: var(--k-left-to, var(--k-left));
 		height: var(--k-height-to, var(--k-h-calc-to, var(--k-height)));
+		margin: var(--k-margin-to, var(--k-margin));
 		opacity: var(--opacity-to, var(--opacity));
 		padding: var(--k-padding-to, var(--k-padding));
-		margin: var(--k-margin-to, var(--k-margin));
+		right: var(--k-right-to, var(--k-right));
 		text-shadow: var(--text-shadow-to, var(--text-shadow));
 		top: var(--k-top-to, var(--k-top));
 		transform: var(--transform-to, var(--transform));
@@ -74,6 +84,8 @@
 	--k-height: var(--height, var(--k-h-calc, auto));
 	--k-left: var(--left, var(--k-x, auto));
 	--k-top: var(--top, var(--k-y, auto));
+	--k-right: var(--right, initial);
+	--k-bottom: var(--bottom, initial);
 	
 	--k-w-to: var(--w-to, var(--s-to, var(--s, var(--w, 1))));
 	--k-h-to: var(--h-to, var(--s-to, var(--s, var(--h, 1))));
@@ -86,6 +98,9 @@
 	--k-height-to: var(--height-to, var(--height, var(--k-h-calc-to)));
 	--k-left-to: var(--left-to, var(--left, var(--k-x-to)));
 	--k-top-to: var(--top-to, var(--top, var(--k-y-to)));
+	--k-right-to: var(--right-to, var(--k-right, initial));
+	--k-bottom-to: var(--bottom-to, var(--k-bottom, initial));
+	
 	/*--k-width-to: var(--width-to, var(--width, var(--k-w-calc-to)));
 	--k-height-to: var(--height-to, var(--height, var(--k-h-calc-to)));
 	--k-left-to: var(--left-to, var(--left, var(--k-x-to)));
@@ -182,12 +197,12 @@
 	--transform-origin: center;
 	--opacity: 1;
 	
+	--k-font-weight: var(--font-weight, normal);
 	--k-font-size: var(--font-size, 1rem);
-	--k-font-weight: var(--font-weight, normal)
 	--k-line-height: var(--line-height, 1);
 	--k-font-family: var(--font-family, "メイリオ", sans-serif);
+	--k-font-weight-to: var(--font-weight-to, var(--k-font-weight));
 	--k-font-size-to: var(--font-size-to, var(--k-font-size));
-	--k-font-weight-to: var(--font-weight-to, var(--k-font-weight))
 	--k-line-height-to: var(--font-height-to, var(--k-line-height));
 	--k-font-family-to: var(--font-family-to, var(--k-font-family));
 	
@@ -195,6 +210,14 @@
 	--font-to: normal normal var(--k-font-weight-to) var(--k-font-size-to)/var(--k-line-height-to) var(--k-font-family-to);
 	
 	--k-animation: var(--animation, var(--animation-name, key) var(--animation-duration, var(--dur, 0s)) var(--animation-timing-function, var(--func, ease)) var(--animation-delay, var(--delay, 0s)) var(--animation-iteration-count, var(--iterate, 1)) var(--animation-direction, var(--dir, normal)) var(--animation-fill-mode, forwards) var(--animation-play-mode, running));
+	
+	--k-clip-path: var(--clip-path, none);
+	--k-clip-path-to: var(--clip-path-to, var(--clip-path));
+	
+	--k-box-shadow: var(--box-shadow, none);
+	--k-box-shadow-to: var(--box-shadow-to, var(--box-shadow));
+	--k-text-shadow: var(--text-shadow, none);
+	--k-text-shadow-to: var(--text-shadow-to, var(--text-shadow));
 	
 	background:	var(--k-background);
 	border-top: var(--k-border-top);
@@ -207,16 +230,20 @@
 	border-bottom-right-radius: var(--k-border-bottom-right-radius);
 	border-bottom-left-radius: var(--k-border-bottom-left-radius);
 	border-radius: var(--k-border-radius);
+	bottom: var(--k-bottom);
+	box-shadow: var(--k-box-shadow);
+	clip-path: var(--k-clip-path);
 	display: var(--display, flex);
 	filter: var(--filter, none);
 	font: var(--font);
 	left: var(--k-left);
 	height: var(--k-height);
+	margin: var(--k-margin);
 	opacity: var(--opacity);
 	padding: var(--k-padding);
 	position: var(--position, absolute);
-	margin: var(--k-margin);
-	text-shadow: var(--text-shadow, none);
+	right: var(--k-right);
+	text-shadow: var(--k-text-shadow);
 	top: var(--k-top);
 	transform: var(--transform);
 	transform-origin: var(--transform-origin);
@@ -230,8 +257,60 @@
 }
 .key.in {
 	
-	--delay: var(--delay-in, 0s);
-	--dur: var(--dur-in, 0s);
+	/*
+		以下の変数は、.key.in > .key.out > .key.primary で入れ子する .key のアニメーションの各開始、終了、再生時間の指定を
+		抽象化することを目的としている。すべての変数は割合を示す単位のない実数のみを指定する。
+		それらの割合は変数 --k-time で表される画像の有効再生時間を範囲に取る。（ただし --key-animation-duration, --key-animation-end は別）
+		平たく言えば、.key.in のアニメーション開始時間を全体の基準開始時間として、
+		また .key.primary のアニメーション開始時間を .key.out の基準開始時間として、
+		それぞれのアニメーションの開始、終了、再生時間を、それぞれの開始時間と画像の再生終了時間との間で半ば自動的に行なうようにする。
+		全体の再生時間が 5 秒の時に
+		--key-animation-begin: 0.1; --key-animation-transition: 0.1; --key-animation-duration: 1; は、
+		.key.in のアニメーションを 0.5 秒後に 0.5 秒間再生し、
+		.key.primary のアニメーション .key.in のアニメーションの再生終了後から 4 秒間再生するを意味する。
+		一見すると難解かつ複雑な仕様だが、同じ指定を --dur, --delay を使って実現すると、
+		--key-time: var(--k-time, var(--time));
+		--k-delay-in: calc(var(--key-time) * .1);
+		--k-dur-in: calc(var(--key-time) * .1);
+		--k-delay-primary: calc(var(--k-delay-in) + var(--k-dur-in));
+		--k-dur-primary: calc((var(--key-time) - var(--k-delay-primary)) * 1);
+		と最大限に短絡化した表現でも非常に冗長である。
+		これらの変数の使用は任意で、各 .key に直接かつ個別に再生、開始時間を指定したければ、
+		通常通りそれぞれの --delay, --dur に時間を指定すればその値が常に優先して使用される。
+		
+		--key-animation-begin
+			アニメーションの開始トランジションの開始時間を実数の割合で指定。
+		--key-animation-transition
+			アニメーションの開始、終了トランジションの再生時間を実数の割合で指定。
+		--key-animation-delay
+			アニメーションの開始時間を実数の割合で指定。未指定の場合 --key-animation-begin と --key-animation-transition の和が使われる。
+		--key-animation-duration
+			アニメーションの時間を実数の割合で指定。この割合が示す時間の範囲は 総時間から --key-animation-delay を引いたものになる。
+			例えば総時間が 5 秒で、--key-animation-duration: 0.5; --key-animation-delay: 0.2; だった場合、
+			アニメーションの再生時間は 5s * 0.5 で 2.5s ではなく、(5s - 5s * 0.2) * 0.5 で 2s になる。（s は秒）
+		--key-animation-end
+			*廃止
+				仕様の実装には分岐が欠かせないが、現状では CSS で分岐はできない。
+				現在は、--key-animation-end-transition の指定に基づいた値でアニメーションが終了する時間に自動で切り詰められる。
+			アニメーションの終了トランジションの開始時間を実数の割合で指定。
+			この割合が示す時間も --key-animation-duration と同様の範囲を指す。
+			未指定の場合は、アニメーションの再生時間から終了トランジションの再生時間を引いた時間、
+			つまり終了トランジションの再生時間がアニメーションの再生時間と一致する値が自動的に使用される。
+		--key-animation-end-transition
+			アニメーションの終了トランジションの再生時間を実数の割合で指定。未指定の場合 --key-animation-transition の値が使われる。
+	*/
+	--kt: var(--k-time, var(--time));
+	
+	--k-delay-in: calc(var(--kt) * var(--key-animation-begin));
+	--k-dur-in: calc(var(--kt) * var(--key-animation-transition));
+	--k-delay-primary: calc(var(--kt) * (var(--key-animation-delay, var(--key-animation-begin)) + var(--key-animation-transition, 0)));
+	--k-dur-primary: calc((var(--kt) - var(--k-delay-primary, 0s)) * var(--key-animation-duration));
+	/*--k-delay-out-default: calc((var(--kt) - var(--k-delay-primary)) * var(--key-animation-end));*/
+	--k-delay-out: calc((var(--k-delay-primary) + var(--k-dur-primary)) - var(--k-dur-out));
+	--k-dur-out: calc(var(--kt) * var(--key-animation-end-transition, var(--key-animation-transition)));
+	
+	--delay: var(--delay-in, var(--k-delay-in, 0s));
+	--dur: var(--dur-in, var(--k-dur-in, 0s));
 	
 	--opacity: var(--key-in-opacity, 0);
 	--opacity-to: var(--key-in-opacity-to, 1);
@@ -239,8 +318,8 @@
 }
 .key.out {
 	
-	--delay: var(--delay-out, 0s);
-	--dur: var(--dur-out, 0s);
+	--delay: var(--delay-out, var(--k-delay-out, 0s));
+	--dur: var(--dur-out, var(--k-dur-out, 0s));
 	
 	--opacity: var(--key-out-opacity, var(--key-in-opacity-to, 1));
 	--opacity-to: var(--key-out-opacity-to, var(--key-in-opacity, 0));
@@ -248,8 +327,8 @@
 }
 .key.in > .key.out > .key {
 	
-	--delay: var(--delay-primary, 0s);
-	--dur: var(--dur-primary, var(--a-current-duration, var(--a-duration, 0s)));
+	--delay: var(--delay-primary, var(--k-delay-primary, 0s));
+	--dur: var(--dur-primary, var(--k-dur-primary, var(--kt, var(--a-duration, 0s))));
 	
 }
 .key.primary {

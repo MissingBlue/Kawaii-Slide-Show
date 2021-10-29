@@ -1,7 +1,7 @@
 .timeout {
 	
 	--timeout-a-dur-max: .95;
-	--timeout-a-dur: calc(var(--a-current-duration) * var(--timeout-a-dur-max));
+	--timeout-a-dur: calc(var(--time) * var(--timeout-a-dur-max));
 	--timeout-blink-count: 3;
 	/* 以下の変数の値は .02 が好ましいが firefox と chrome では異なり、chrome では想定しない長さになるため chrome に合わせている */
 	--timeout-blink-dur-length: .015;
@@ -32,7 +32,7 @@
 	animation:	timeout var(--timeout-a-dur) ease-out 0s 1 normal forwards running,
 					/* 以下の animation-timing-function は steps(2,jump-none) を指定すべきだが、固定値 jump は chrome 77 未満では非対応 */
 					timeout-blink var(--timeout-blink-dur) linear calc(var(--timeout-a-dur) - var(--timeout-blink-dur) * var(--timeout-blink-count)) var(--timeout-blink-count) normal backwards running,
-					timeout-end calc(var(--a-current-duration) - var(--timeout-a-dur)) ease-in var(--timeout-a-dur) 1 normal forwards running;
+					timeout-end calc(var(--time) - var(--timeout-a-dur)) ease-in var(--timeout-a-dur) 1 normal forwards running;
 	
 }
 .f1 .timeout, .f4 .timeout, .f7 .timeout { --timeout-margin: 0 var(--timeout-margin-value) 0 0; }

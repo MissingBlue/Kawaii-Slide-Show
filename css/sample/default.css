@@ -1,0 +1,6 @@
+.viewport {
+	--viewport-height: calc(var(--image-seq-target-rect-height) * var(--correction));
+	background: left top/contain var(--bgi) no-repeat;
+	width: calc(var(--width) * var(--height) / var(--viewport-height));
+	height: var(--viewport-height);
+}
