@@ -1,4 +1,4 @@
-// Change this file name to "settings.js" then app will configures with this settings.
+// Change this file name to "settings.js" then app will be configured with this settings.
 
 // 必要最小限の設定内容で、処理が重く動作環境を選ぶが表示オプションが豊富なテンプレートを既定で使用する設定ファイル。
 // この設定ファイルを流用する場合、ファイル名を settings.default.js から settings.js に変更すること。
