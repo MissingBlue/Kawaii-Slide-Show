@@ -431,7 +431,7 @@ class App {
 		return fe.ends = new Promise((rs,rj) => fe.endCond.executed.then(() => {
 				
 				// fe.end の値が true の時、
-				// 自身ののすべての子要素（再帰を含む）の endCond.excuted が解決された時に、自身の endCond を解決する。
+				// 自身のすべての子要素（再帰を含む）の endCond.excuted が解決された時に、自身の endCond を解決する。
 				
 				const resolve = () => (!i || ++i0 >= i) && (this.resolveAll(fe), rs()/*, (fe.traces && clearInterval(fe.traceTimer), fe.loops = (fe.loops || (fe.loops = 0)) + 1) < 2 && hi(Date.now()- f.time,Date.now()- fe.time,fe.$,fe.time,Date.now()))*/);
 				let i,i0;
