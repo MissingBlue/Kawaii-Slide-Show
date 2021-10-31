@@ -1,4 +1,5 @@
 // Rename this file to "settings.js" then app will be configured with this settings.
+// Check if there are any files in the "files" property before that.
 
 // 必要最小限の設定内容で、処理が重く動作環境を選ぶが表示オプションが豊富なテンプレートを既定で使用する設定ファイル。
 // この設定ファイルを流用する場合、ファイル名を settings.default.js から settings.js に変更すること。
@@ -10,13 +11,16 @@ const SETTINGS = {
 dur: 10,
 position: 1,
 app_width: '100%',
-app_height: '60%',
+app_height: '50%',
 
 profileName: [ 'default', 'simplex' ],
+// profileName から simplex を消すと、画像のモーショングラフィックに対応したスライドショーになる。
+// ただし処理がかなり重いため、動作速度に影響がある場合は simplex を指定した状態での実行を推奨。
 
 files: [
 	
-	// simplex 版コピペ用記述子
+	// コピペ用ファイル記述子1。/* */ で囲まれた中をコピペして使用する。プロパティ file_path の img/ 以下に有効なファイル名を指定すること。
+	// // で始まるプロパティはコメントになっているので、使用する場合は // を消すこと。
 	/*
 	{
 		file_path: "img/",
@@ -30,7 +34,9 @@ files: [
 		//file_description_pos: '',
 	},
 	*/
-	// サンプルファイル記述子。プロパティ file_path の img/ 以下に有効なファイル名を指定すること。
+	
+	// コピペ用ファイル記述子2。profileName に simplex を指定しない場合はこちらを使用することを推奨。
+	// // で始まるプロパティはコメントになっているので、使用する場合は // を消すこと。
 	/*
 	{
 		file_path: "img/",
@@ -103,22 +109,6 @@ files: [
 		// 指定できる値は top, right, bottom, left のいずれかで、それぞれ対応する位置に説明文を表示する。
 		// この機能を使う場合は、file_description_pos の前の // を消すこと。
 		
-	},
-	// コピペ用ファイル記述子。
-	// // で始まるプロパティはコメントになっているので、使用する場合は // を消すこと。
-	{
-		file_path: "img/",
-		file_template: '{default_simplex}',
-		//dur: true,
-		//exclusive: true,
-		//file_attribute: 'guest',
-		file_title: '',
-		file_date: '2021 1 1',
-		file_author: '',
-		file_copy_0: '',
-		file_copy_1: '',
-		//file_description: '',
-		//file_description_pos: '',
 	},
 	*/
 ]

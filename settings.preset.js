@@ -63,7 +63,26 @@ cue: 0,
 // 例えば上記の例の場合、cue に -1 を指定すると、再生順は 'c', 'a', 'b', 'c' ... になる。
 // 範囲外の値を指定するか整数以外の値を指定した場合、files の先頭か最後尾に丸められる。
 
-files: [],
+files: [
+"img/sample-0.png",
+{ file_path: "img/sample-1.png", file_author: 'SAMPLE' },
+{
+	file_path: "img/sample-2.png",
+	template: {
+		
+		default_author: { tag: 'div', text: 'This is an overwritten template. Never affect the other files using the original one though.' }
+		
+	}
+},
+{ file_path: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Thuringia_Eisenach_asv2020-07_img23_Wartburg_Castle.jpg/800px-Thuringia_Eisenach_asv2020-07_img23_Wartburg_Castle.jpg", file_author: "«© A.Savin, WikiCommons»" },
+{
+	file_path: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Blutenburg_gespiegelt.jpg/800px-Blutenburg_gespiegelt.jpg",
+	file_author: 'Schloss Blutenburg in Obermenzing/München.',
+	// A "template" property for the file descriptor is useful but it reduces readbility.
+	// This property is refered from the "children" property of the "default" template,
+	// and it will be replaced with the "wikimedia_author"
+	file_author_template: '{wikimedia_author}',
+},],
 // 表示する画像のリスト。
 // 角括弧 [] に囲まれた中に画像ファイルの相対パスか絶対パス、または URL を、シングルクォーテーション(')かダブルクォーテーション(")で囲んで指定する。
 // 複数ある場合はコンマ(,)で区切って並べて指定する。このリストに並べた順で表示を行う。
@@ -124,134 +143,6 @@ profile: {
 		
 	},
 	
-	simplex: {
-		
-		file_template: '{default_simplex}',
-		
-		template: {
-			
-			default_notation: {
-				end: true,
-				attr: { 'class': 'key in note', 'data-notation': '[[file_note]]' },
-				style: {
-					
-					'--delay-in': 'calc(var(--time-remaining) * 1 / 10)',
-					'--dur-in': 'calc(var(--time-remaining) * .05)',
-					
-					'--delay-primary': '0s',
-					'--dur-primary': 'calc(var(--time-remaining) * .9)',
-					
-					'--delay-out': 'calc((var(--delay-primary) + var(--dur-primary)) - var(--dur-out))',
-					'--dur-out': 'var(--dur-in)',
-					
-				},
-				children: '{default_notation_content}'
-			},
-			file_meta: {
-				end: true,
-				attr: { 'class': 'meta' },
-				style: {
-					
-					'opacity': 1,
-					
-					'--delay-in': 'calc(var(--time-remaining) * .5)',
-					//'--delay-in': 'calc(var(--time-remaining) * .0)',
-					'--dur-in': 'calc(var(--time-remaining) * .025)',
-					'--delay-out': 'calc(var(--time-remaining) * .85)',
-					'--dur-out': 'var(--dur-in)',
-					/*
-					'--delay-in': 'calc(var(--time-remaining) * 0)',
-					//'--delay-in': 'calc(var(--time-remaining) * .0)',
-					'--dur-in': 'calc(var(--time-remaining) * .025)',
-					'--delay-out': 'calc(var(--time-remaining) * 1)',
-					'--dur-out': 'var(--dur-in)',
-					*/
-					'--delay-vr-in': 'var(--delay-in)',
-					'--dur-vr-in': 'var(--dur-in)',
-					'--delay-vr-out': 'var(--delay-out)',
-					'--dur-vr-out': 'var(--dur-vr-in)',
-					
-				},
-				children: '{file_meta_content}'
-			},
-			default_key: [
-				{
-					end: true,
-					attr: {
-						'data-share-css-q': '.view-root',
-						'data-share-css-filter': '--key-0-dur-remaining'
-					},
-					style: {
-						
-						'--key-0-dur-remaining': '!1!s',
-						
-						'--delay-in': 'var(--key-0-delay-in)',
-						'--dur-in': 'var(--key-0-dur-in)',
-						'--delay-primary': 'var(--key-0-delay-primary)',
-						'--dur-primary': 'var(--key-0-dur-primary)',
-						'--delay-out': 'var(--key-0-delay-out)',
-						'--dur-out': 'var(--key-0-dur-out)',
-						
-						'--ref-in-dur-1': 'calc(var(--time-remaining) * (.08 - .08 * var(--has-time-diff)))',
-						'--ref-one-delay': 'calc(var(--time-remaining) * (.12 - .12 * var(--has-time-diff)))',
-						
-					},
-					children: [
-						{
-							end: true,
-							attr: { 'class': 'key in view default-0', },
-							style: {
-								'--func': 'var(--key-0-func-in, ease-out)',
-								'--iterate': 'var(--key-0-iterate-in, 1)',
-								'--dir': 'var(--key-0-dir-in, normal)',
-								'--opacity': 'var(--key-0-opacity-in, 0)',
-								'--opacity-to': 'var(--key-0-opacity-in-to, 1)',
-								'--transform': 'var(--key-0-transform-in, none)',
-								'--transform-to': 'var(--key-0-transform-in-to, var(--transform))',
-							},
-							children: {
-								end: { event: { animationend: { target: true, name: 'key' } } },
-								attr: { 'class': 'key out' },
-								style: {
-									'--func': 'var(--key-0-func-out, ease-in)',
-									'--iterate': 'var(--key-0-iterate-out, 1)',
-									'--dir': 'var(--key-0-dir-out, normal)',
-									'--opacity': 'var(--key-0-opacity-out, 1)',
-									'--opacity-to': 'var(--key-0-opacity-out-to, 0)',
-									'--transform': 'var(--key-0-transform-out, none)',
-									'--transform-to': 'var(--key-0-transform-out-to, var(--transform))',
-								},
-								children: {
-									attr: { 'class': 'key primary' },
-									style: {
-										
-										'--func': 'var(--key-0-func, ease)',
-										'--iterate': 'var(--key-0-iterate, 1)',
-										'--dir': 'var(--key-0-dir, normal)',
-										'--s': 'var(--key-0-s)', '--s-to': 'var(--key-0-s-to)',
-										'--x': 'var(--key-0-x)', '--x-to': 'var(--key-0-x-to)',
-										'--y': 'var(--key-0-y)', '--y-to': 'var(--key-0-y-to)',
-										'--opacity': 'var(--key-0-opacity, 1)',
-										'--opacity-to': 'var(--key-0-opacity-to, var(--opacity))',
-										'--transform': 'var(--key-0-transform, none)',
-										'--transform-to': 'var(--key-0-transform-to, var(--transform))',
-										'--z-index': 'var(--key-0-z-index, 0)'
-										
-									}
-								}
-							}
-						},
-						'{default_reflection_in}',
-						'{default_reflection_one}'
-					]
-				},
-				
-			]
-
-		}
-		
-	},
-	
 	simple: {
 		
 		css: 'css/simple.css',
@@ -303,11 +194,28 @@ profile: {
 		
 	},
 	
+	simplex: {
+		
+		file_template: '{default_simplex}',
+		
+		default_begin_constrain: null,
+		
+		template: {
+			
+			default_key: '{default_key_0}',
+			default_key_0_reflection: [ '{default_reflection_in}', '{default_reflection_one}' ],
+
+		}
+		
+	},
+	
 	default: {
 		
 		css: 'css/default.css',
 		
 		cssvar: '{"target-raw-rect-height[0]":"{#h*}"}',
+		
+		default_begin_constrain: { event: { animationstart: { target: '.attr-bg > .out', persistent: true, name: 'key' } } },
 		
 		template: {
 			
@@ -683,7 +591,7 @@ profile: {
 				attr: { 'class': 'timeout' }
 			},
 			default_notation: {
-				begin: { event: { animationstart: { target: '.attr-bg > .out', persistent: true, name: 'key' } } },
+				begin: '[[default_begin_constrain]]',
 				end: true,
 				attr: { 'class': 'key in note', 'data-notation': '[[file_note]]' },
 				style: {
@@ -706,7 +614,7 @@ profile: {
 				children: { attr: { 'class': 'key primary', 'data-notation': '[[file_note]]' }, }
 			},
 			file_meta: {
-				begin: { event: { animationstart: { target: '.attr-bg > .out', persistent: true, name: 'key' } } },
+				begin: '[[default_begin_constrain]]',
 				end: true,
 				attr: { 'class': 'meta' },
 				style: {
@@ -774,7 +682,7 @@ profile: {
 				'{default_key}'
 			],
 			default_copy: {
-				begin: { event: { animationstart: { target: '.attr-bg > .out', persistent: true, name: 'key' } } },
+				begin: '[[default_begin_constrain]]',
 				end: true,
 				attr: { 'class': 'copy key' },
 				style: {
@@ -1148,7 +1056,7 @@ profile: {
 				children: '[[file_template:{default_content}]]'
 			},
 			file_description: {
-				begin: { event: { animationstart: { target: '.attr-bg > .out', persistent: true, name: 'key' } } },
+				begin: '[[default_begin_constrain]]',
 				end: true,
 				attr: {
 					'class': 'key in desc',
@@ -1348,6 +1256,75 @@ profile: {
 					}
 				}
 			],
+			default_key_0_view: {
+				end: true,
+				attr: { 'class': 'key in view default-0', },
+				style: {
+					'--func': 'var(--key-0-func-in, ease-out)',
+					'--iterate': 'var(--key-0-iterate-in, 1)',
+					'--dir': 'var(--key-0-dir-in, normal)',
+					'--opacity': 'var(--key-0-opacity-in, 0)',
+					'--opacity-to': 'var(--key-0-opacity-in-to, 1)',
+					'--transform': 'var(--key-0-transform-in, none)',
+					'--transform-to': 'var(--key-0-transform-in-to, var(--transform))',
+				},
+				children: {
+					end: { event: { animationend: { target: true, name: 'key' } } },
+					attr: { 'class': 'key out' },
+					style: {
+						'--func': 'var(--key-0-func-out, ease-in)',
+						'--iterate': 'var(--key-0-iterate-out, 1)',
+						'--dir': 'var(--key-0-dir-out, normal)',
+						'--opacity': 'var(--key-0-opacity-out, 1)',
+						'--opacity-to': 'var(--key-0-opacity-out-to, 0)',
+						'--transform': 'var(--key-0-transform-out, none)',
+						'--transform-to': 'var(--key-0-transform-out-to, var(--transform))',
+					},
+					children: {
+						attr: { 'class': 'key primary' },
+						style: {
+							
+							'--func': 'var(--key-0-func, ease)',
+							'--iterate': 'var(--key-0-iterate, 1)',
+							'--dir': 'var(--key-0-dir, normal)',
+							'--s': 'var(--key-0-s)', '--s-to': 'var(--key-0-s-to)',
+							'--x': 'var(--key-0-x)', '--x-to': 'var(--key-0-x-to)',
+							'--y': 'var(--key-0-y)', '--y-to': 'var(--key-0-y-to)',
+							'--opacity': 'var(--key-0-opacity, 1)',
+							'--opacity-to': 'var(--key-0-opacity-to, var(--opacity))',
+							'--transform': 'var(--key-0-transform, none)',
+							'--transform-to': 'var(--key-0-transform-to, var(--transform))',
+							'--z-index': 'var(--key-0-z-index, 0)'
+							
+						}
+					}
+				}
+			},
+			default_key_0: {
+				begin: '[[default_begin_constrain]]',
+				end: true,
+				attr: {
+					'data-share-css-q': '.view-root',
+					'data-share-css-filter': '--key-0-dur-remaining'
+				},
+				style: {
+					
+					'--key-0-dur-remaining': '!1!s',
+					
+					'--delay-in': 'var(--key-0-delay-in)',
+					'--dur-in': 'var(--key-0-dur-in)',
+					'--delay-primary': 'var(--key-0-delay-primary)',
+					'--dur-primary': 'var(--key-0-dur-primary)',
+					'--delay-out': 'var(--key-0-delay-out)',
+					'--dur-out': 'var(--key-0-dur-out)',
+					
+					'--ref-in-dur-1': 'calc(var(--time-remaining) * (.08 - .08 * var(--has-time-diff)))',
+					'--ref-one-delay': 'calc(var(--time-remaining) * (.12 - .12 * var(--has-time-diff)))',
+					
+				},
+				children: [ '{default_key_0_view}', '{default_key_0_reflection}' ],
+			},
+			default_key_0_reflection: '{default_reflection_in}',
 			default_key: [
 				{
 					end: true,
@@ -1360,75 +1337,7 @@ profile: {
 					},
 					children: '{default_attr}'
 				},
-				{
-					begin: { event: { animationstart: { target: '.attr-bg > .out', persistent: true, name: 'key' } } },
-					end: true,
-					attr: {
-						'data-share-css-q': '.view-root',
-						'data-share-css-filter': '--key-0-dur-remaining'
-					},
-					style: {
-						
-						'--key-0-dur-remaining': '!1!s',
-						
-						'--delay-in': 'var(--key-0-delay-in)',
-						'--dur-in': 'var(--key-0-dur-in)',
-						'--delay-primary': 'var(--key-0-delay-primary)',
-						'--dur-primary': 'var(--key-0-dur-primary)',
-						'--delay-out': 'var(--key-0-delay-out)',
-						'--dur-out': 'var(--key-0-dur-out)',
-						
-						'--ref-in-dur-1': 'calc(var(--time-remaining) * (.08 - .08 * var(--has-time-diff)))'
-						
-					},
-					children: [
-						{
-							end: true,
-							attr: { 'class': 'key in view default-0', },
-							style: {
-								'--func': 'var(--key-0-func-in, ease-out)',
-								'--iterate': 'var(--key-0-iterate-in, 1)',
-								'--dir': 'var(--key-0-dir-in, normal)',
-								'--opacity': 'var(--key-0-opacity-in, 0)',
-								'--opacity-to': 'var(--key-0-opacity-in-to, 1)',
-								'--transform': 'var(--key-0-transform-in, none)',
-								'--transform-to': 'var(--key-0-transform-in-to, var(--transform))',
-							},
-							children: {
-								end: { event: { animationend: { target: true, name: 'key' } } },
-								attr: { 'class': 'key out' },
-								style: {
-									'--func': 'var(--key-0-func-out, ease-in)',
-									'--iterate': 'var(--key-0-iterate-out, 1)',
-									'--dir': 'var(--key-0-dir-out, normal)',
-									'--opacity': 'var(--key-0-opacity-out, 1)',
-									'--opacity-to': 'var(--key-0-opacity-out-to, 0)',
-									'--transform': 'var(--key-0-transform-out, none)',
-									'--transform-to': 'var(--key-0-transform-out-to, var(--transform))',
-								},
-								children: {
-									attr: { 'class': 'key primary' },
-									style: {
-										
-										'--func': 'var(--key-0-func, ease)',
-										'--iterate': 'var(--key-0-iterate, 1)',
-										'--dir': 'var(--key-0-dir, normal)',
-										'--s': 'var(--key-0-s)', '--s-to': 'var(--key-0-s-to)',
-										'--x': 'var(--key-0-x)', '--x-to': 'var(--key-0-x-to)',
-										'--y': 'var(--key-0-y)', '--y-to': 'var(--key-0-y-to)',
-										'--opacity': 'var(--key-0-opacity, 1)',
-										'--opacity-to': 'var(--key-0-opacity-to, var(--opacity))',
-										'--transform': 'var(--key-0-transform, none)',
-										'--transform-to': 'var(--key-0-transform-to, var(--transform))',
-										'--z-index': 'var(--key-0-z-index, 0)'
-										
-									}
-								}
-							}
-						},
-						'{default_reflection_in}'
-					]
-				},
+				'{default_key_0}',
 				{
 					begin: { promise: { index: -1, when: 'end' } }, end: true,
 					children: [
@@ -1599,7 +1508,7 @@ profile: {
 	
 },
 
-version: '0.33',
+version: '0.35',
 
 changes: []
 

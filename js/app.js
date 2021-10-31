@@ -295,12 +295,14 @@ class App {
 			
 		} else if (text !== undefined) elm.textContent = text;
 		
+		fe.begin && typeof fe.begin === 'string' && (isObj(fe.begin = r(fe.begin)) || (delete fe.begin)),
 		fe.begin && typeof fe.begin.timeout === 'string' &&
 			(dict.__key = 'beginTimeout', fe.begin.timeout = r(fe.begin.timeout)),
 		(fe.beginCond || (fe.beginCond = new Condition())).set(fe.begin, true),
 		fe.beginCond.standby(f.dur, fe.$),
 		fe.pendingBegin = !fe.begin || !!fe.begin.promise,
 		
+		fe.end && typeof fe.end === 'string' && (isObj(fe.end = r(fe.end)) || (delete fe.end)),
 		fe.end && typeof fe.end.timeout === 'string' &&
 			(dict.__key = 'endTimeout', fe.end.timeout = r(fe.end.timeout)),
 		(fe.endCond || (fe.endCond = new Condition())).set(fe.end, true),
@@ -738,14 +740,16 @@ class App {
 	// このメソッドを正規表現とともに使う場合、フラグ g の設定は必須で、未設定の場合無限ループになる。
 	static replace(str, rx, dict, replacer) {
 		
-		let result, replaced, lastIndex;
+		let result, replaced, lastIndex, v;
 		
 		if (!rx) return str;
 		
 		replaced = '';
-		while (result = rx.exec(str))	replaced += str.substring(lastIndex || 0, result.index) +
-													(typeof replacer === 'function' ? replacer(result, dict, rx) : replacer),
-												lastIndex = rx.lastIndex;
+		while (result = rx.exec(str))	{
+			if (isObj(v = typeof replacer === 'function' ? replacer(result, dict, rx) : replacer)) return v;
+			replaced += str.substring(lastIndex || 0, result.index) + v,
+			lastIndex = rx.lastIndex;
+		}
 		
 		return lastIndex === undefined ? str : replaced + str.substring(lastIndex);
 		
